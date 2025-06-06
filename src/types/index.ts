@@ -1,4 +1,4 @@
-import { Icons } from '@/components/icons';
+import { icons } from "lucide-react";
 
 export interface NavItem {
   title: string;
@@ -6,7 +6,7 @@ export interface NavItem {
   disabled?: boolean;
   external?: boolean;
   shortcut?: [string, string];
-  icon?: keyof typeof Icons;
+  icon?: keyof typeof icons;
   label?: string;
   description?: string;
   isActive?: boolean;

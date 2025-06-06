@@ -1,4 +1,4 @@
-import { NavItem } from '@/types';
+import { NavItem } from "@/types";
 
 export type Product = {
   photo_url: string;
@@ -11,53 +11,101 @@ export type Product = {
   updated_at: string;
 };
 
+
 //Info: The following data is used for the sidebar navigation and Cmd K bar.
 export const navItems: NavItem[] = [
   {
-    title: 'Dashboard',
-    url: '/dashboard/overview',
-    icon: 'dashboard',
+    title: "Panel",
+    url: "/panel/overview",
+    icon: "LayoutDashboard",
     isActive: false,
-    shortcut: ['d', 'd'],
-    items: [] // Empty array as there are no child items for Dashboard
+    shortcut: ["d", "d"],
+    items: [], // Empty array as there are no child items for Dashboard
   },
+  // Secretaria
   {
-    title: 'Product',
-    url: '/dashboard/product',
-    icon: 'product',
-    shortcut: ['p', 'p'],
+    title: "Secretaria",
+    url: "/panel/secretaria",
+    icon: "User",
     isActive: false,
-    items: [] // No child items
-  },
-  {
-    title: 'Account',
-    url: '#', // Placeholder as there is no direct link for the parent
-    icon: 'billing',
-    isActive: true,
-
     items: [
       {
-        title: 'Profile',
-        url: '/dashboard/profile',
-        icon: 'userPen',
-        shortcut: ['m', 'm']
+        title: "Secretaria",
+        url: "/panel/secretaria",
+        icon: "User",
+        isActive: false,
       },
-      {
-        title: 'Login',
-        shortcut: ['l', 'l'],
-        url: '/',
-        icon: 'login'
-      }
-    ]
+    ],
   },
+  // Administracion
   {
-    title: 'Kanban',
-    url: '/dashboard/kanban',
-    icon: 'kanban',
-    shortcut: ['k', 'k'],
+    title: "Administracion",
+    url: "/panel/administracion",
+    icon: "Settings",
     isActive: false,
-    items: [] // No child items
-  }
+    shortcut: ["a", "a"],
+    items: [
+      //Usuarios
+      {
+        title: "Usuarios",
+        url: "#",
+        icon: "User",
+        shortcut: ["u", "u"],
+        isActive: false,
+        items: [
+          {
+            title: "Usuarios",
+            url: "/administracion/usuarios",
+            icon: "User",
+            shortcut: ["u", "u"],
+          },
+          {
+            title: "Roles",
+            shortcut: ["r", "r"],
+            url: "/administracion/roles",
+            icon: "User",
+          },
+          {
+            title: "Permisos",
+            shortcut: ["p", "p"],
+            url: "/administracion/permisos",
+            icon: "User",
+          },
+        ], // No child items
+      },
+      // Sucursales
+      {
+        title: "Sucursales",
+        url: "/panel/sucursales",
+        icon: "Store",
+        shortcut: ["s", "s"],
+        isActive: false,
+        items: [], // No child items
+      },
+      // Pacientes
+      {
+        title: "Pacientes",
+        url: "/panel/pacientes",
+        icon: "User",
+        shortcut: ["p", "p"],
+        isActive: false,
+      },
+      // Productos
+      {
+        title: "Productos",
+        url: "/panel/productos",
+        icon: "Package",
+        shortcut: ["p", "p"],
+      },
+      // Proveedores
+      {
+        title: "Proveedores",
+        url: "/panel/proveedores",
+        icon: "Users",
+        shortcut: ["p", "p"],
+      },
+    ], // Empty array as there are no child items for Dashboard
+  },
 ];
 
 export interface SaleUser {
@@ -72,42 +120,42 @@ export interface SaleUser {
 export const recentSalesData: SaleUser[] = [
   {
     id: 1,
-    name: 'Olivia Martin',
-    email: 'olivia.martin@email.com',
-    amount: '+$1,999.00',
-    image: 'https://api.slingacademy.com/public/sample-users/1.png',
-    initials: 'OM'
+    name: "Olivia Martin",
+    email: "olivia.martin@email.com",
+    amount: "+$1,999.00",
+    image: "https://api.slingacademy.com/public/sample-users/1.png",
+    initials: "OM",
   },
   {
     id: 2,
-    name: 'Jackson Lee',
-    email: 'jackson.lee@email.com',
-    amount: '+$39.00',
-    image: 'https://api.slingacademy.com/public/sample-users/2.png',
-    initials: 'JL'
+    name: "Jackson Lee",
+    email: "jackson.lee@email.com",
+    amount: "+$39.00",
+    image: "https://api.slingacademy.com/public/sample-users/2.png",
+    initials: "JL",
   },
   {
     id: 3,
-    name: 'Isabella Nguyen',
-    email: 'isabella.nguyen@email.com',
-    amount: '+$299.00',
-    image: 'https://api.slingacademy.com/public/sample-users/3.png',
-    initials: 'IN'
+    name: "Isabella Nguyen",
+    email: "isabella.nguyen@email.com",
+    amount: "+$299.00",
+    image: "https://api.slingacademy.com/public/sample-users/3.png",
+    initials: "IN",
   },
   {
     id: 4,
-    name: 'William Kim',
-    email: 'will@email.com',
-    amount: '+$99.00',
-    image: 'https://api.slingacademy.com/public/sample-users/4.png',
-    initials: 'WK'
+    name: "William Kim",
+    email: "will@email.com",
+    amount: "+$99.00",
+    image: "https://api.slingacademy.com/public/sample-users/4.png",
+    initials: "WK",
   },
   {
     id: 5,
-    name: 'Sofia Davis',
-    email: 'sofia.davis@email.com',
-    amount: '+$39.00',
-    image: 'https://api.slingacademy.com/public/sample-users/5.png',
-    initials: 'SD'
-  }
+    name: "Sofia Davis",
+    email: "sofia.davis@email.com",
+    amount: "+$39.00",
+    image: "https://api.slingacademy.com/public/sample-users/5.png",
+    initials: "SD",
+  },
 ];
