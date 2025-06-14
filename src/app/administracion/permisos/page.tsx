@@ -3,6 +3,7 @@ import { buttonVariants } from "@/components/ui/button";
 import { Heading } from "@/components/ui/heading";
 import { Separator } from "@/components/ui/separator";
 import { DataTableSkeleton } from "@/components/ui/table/data-table-skeleton";
+import { ModalNuevoPermiso } from "@/features/permisos/components/modal/nuevo-permiso";
 import PermisosListingPage from "@/features/permisos/components/permisos-listing";
 import { searchParamsCache, serialize } from "@/lib/searchparams";
 import { cn } from "@/lib/utils";
@@ -31,9 +32,10 @@ export default async function Page(props: pageProps) {
       <div className="flex flex-1 flex-col space-y-4">
         <div className="flex items-start justify-between">
           <Heading title="Permisos" description="Tabla de administracion de Permisos" />
-          <Link href="/administracion/permisos/nuevo" className={cn(buttonVariants(), "text-xs md:text-sm")}>
+          {/* <Link href="/administracion/permisos/nuevo" className={cn(buttonVariants(), "text-xs md:text-sm")}>
             <IconPlus className="size-4" /> Nuevo Permiso
-          </Link>
+          </Link> */}
+          <ModalNuevoPermiso />
         </div>
         <Separator />
         <Suspense

@@ -2,7 +2,7 @@
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Rol } from "@/schemas/administracion/rol/rol.schema";
+import { Rol } from "@/modules/administracion/schemas/rol.schema";
 import { SubmitHandler, UseFormReturn } from "react-hook-form";
 
 interface FormValues {

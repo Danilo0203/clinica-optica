@@ -1,5 +1,5 @@
 "use client";
-import { listRoles } from "@/services/administracion/rol/rol.services";
+import { listRoles } from "@/modules/administracion/services/rol.services";
 import { useQuery } from "@tanstack/react-query";
 
 export const useQueryRol = () => {

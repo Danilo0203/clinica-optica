@@ -1,34 +1,34 @@
 "use client";
 import { Badge } from "@/components/ui/badge";
-import { DataTableColumnHeader } from "@/components/ui/table/data-table-column-header";
-import { Product } from "@/constants/data";
-import { Column, ColumnDef } from "@tanstack/react-table";
+import { ColumnDef } from "@tanstack/react-table";
 import { CheckCircle2, Text, XCircle } from "lucide-react";
-import Image from "next/image";
 import { CellAction } from "./cell-action";
 import { CATEGORY_OPTIONS } from "./options";
+import { ListarPermisosType } from "@/modules/administracion/interfaces/permisos.interfaces";
+import { cn } from "@/lib/utils";
 
-export const columns: ColumnDef<Product>[] = [
+export const columns: ColumnDef<ListarPermisosType>[] = [
   {
-    accessorKey: "photo_url",
-    header: "IMAGE",
+    accessorKey: "id",
+    header: "No.",
     cell: ({ row }) => {
-      return (
-        <div className="relative aspect-square">
-          <Image src={row.getValue("photo_url")} alt={row.getValue("name")} fill className="rounded-lg" />
-        </div>
-      );
+      const data = row.original.id;
+      return data;
+    },
+    meta: {
+      label: "No.",
     },
   },
   {
-    id: "name",
-    accessorKey: "name",
-    header: ({ column }: { column: Column<Product, unknown> }) => (
-      <DataTableColumnHeader column={column} title="Name" />
-    ),
-    cell: ({ cell }) => <div>{cell.getValue<Product["name"]>()}</div>,
+    id: "nombre",
+    accessorKey: "nombre",
+    header: "Nombre",
+    cell: ({ row }) => {
+      const data = row.original.nombre;
+      return data;
+    },
     meta: {
-      label: "Name",
+      label: "Nombre",
       placeholder: "Buscar permisos...",
       variant: "text",
       icon: Text,
@@ -36,21 +36,12 @@ export const columns: ColumnDef<Product>[] = [
     enableColumnFilter: true,
   },
   {
-    id: "category",
-    accessorKey: "category",
-    header: ({ column }: { column: Column<Product, unknown> }) => (
-      <DataTableColumnHeader column={column} title="Category" />
-    ),
-    cell: ({ cell }) => {
-      const status = cell.getValue<Product["category"]>();
-      const Icon = status === "active" ? CheckCircle2 : XCircle;
-
-      return (
-        <Badge variant="outline" className="capitalize">
-          <Icon />
-          {status}
-        </Badge>
-      );
+    id: "descripcion",
+    accessorKey: "descripcion",
+    header: "Descripción",
+    cell: ({ row }) => {
+      const data = row.original.descripcion;
+      return data;
     },
     enableColumnFilter: true,
     meta: {
@@ -60,16 +51,32 @@ export const columns: ColumnDef<Product>[] = [
     },
   },
   {
-    accessorKey: "price",
-    header: "PRICE",
-  },
-  {
-    accessorKey: "description",
-    header: "DESCRIPTION",
+    accessorKey: "activo",
+    header: "Estado",
+    cell: ({ row }) => {
+      const data = row.original.activo;
+      const Icon = data ? CheckCircle2 : XCircle;
+      return (
+        <Badge
+          variant="outline"
+          className={cn(data ? "text-green-600 bg-green-300/20!" : "text-destructive bg-destructive/20!")}
+        >
+          <Icon />
+          {data ? "Activo" : "Inactivo"}
+        </Badge>
+      );
+    },
+    meta: {
+      label: "Estado",
+    },
   },
 
   {
-    id: "actions",
+    id: "acciones",
+    header: "Acciones",
     cell: ({ row }) => <CellAction data={row.original} />,
+    meta: {
+      label: "Acciones",
+    },
   },
 ];

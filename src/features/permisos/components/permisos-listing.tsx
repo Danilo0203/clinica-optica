@@ -1,8 +1,9 @@
-import { Product } from "@/constants/data";
-import { fakeProducts } from "@/constants/mock-api";
 import { searchParamsCache } from "@/lib/searchparams";
-import { RolesTable } from "./permisos-tabla";
 import { columns } from "./permisos-tabla/columns";
+import { PermisosTable } from "./permisos-tabla";
+import { getQueryClient } from "@/lib/get-query-client";
+import { listPermisos } from "@/modules/administracion/services/permiso.services";
+import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 
 type UsuarioListingPage = {};
 
@@ -19,10 +20,17 @@ export default async function PermisosListingPage({}: UsuarioListingPage) {
     ...(search && { search }),
     ...(categories && { categories: categories }),
   };
+  const queryClient = getQueryClient();
+  await queryClient.prefetchQuery({
+    queryKey: ["permisos"],
+    queryFn: listPermisos,
+  });
 
-  const data = await fakeProducts.getProducts(filters);
-  const totalProducts = data.total_products;
-  const products: Product[] = data.products;
-
-  return <RolesTable data={products} totalItems={totalProducts} columns={columns} />;
+  return (
+    <>
+      <HydrationBoundary state={dehydrate(queryClient)}>
+        <PermisosTable columns={columns} />
+      </HydrationBoundary>
+    </>
+  );
 }

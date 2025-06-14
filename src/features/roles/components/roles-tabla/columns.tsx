@@ -5,7 +5,7 @@ import { Column, ColumnDef } from "@tanstack/react-table";
 import { Text } from "lucide-react";
 import { CellAction } from "./cell-action";
 
-import { ListarRolesType } from "@/interfaces/rol.interfaces";
+import { ListarRolesType } from "@/modules/administracion/interfaces/rol.interfaces";
 
 export const columns: ColumnDef<ListarRolesType>[] = [
   {

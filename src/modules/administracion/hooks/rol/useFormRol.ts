@@ -1,14 +1,13 @@
-import { Rol, rolSchema } from "@/schemas/administracion/rol/rol.schema";
+import { Rol, rolSchema } from "@/modules/administracion/schemas/rol.schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { useMutateRol } from "./useMutateRol";
 
-export const useFormRol = (setOpen: (open: boolean) => void, data?: Partial<Rol> & { id: number }) => {
-  const isEdit = Boolean(data);
+export const useFormRol = (setOpen: (open: boolean) => void) => {
   const form = useForm<Rol>({
     defaultValues: {
-      nombre: data?.nombre ? data.nombre : "",
-      descripcion: data?.descripcion ? data.descripcion : "",
+      nombre: "",
+      descripcion: "",
     },
     resolver: zodResolver(rolSchema),
     mode: "onChange",

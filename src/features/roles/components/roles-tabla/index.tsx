@@ -1,9 +1,9 @@
 "use client";
 import { DataTable } from "@/components/ui/table/data-table";
 import { DataTableToolbar } from "@/components/ui/table/data-table-toolbar";
-import { useQueryRol } from "@/hooks/administracion/rol/useQueryRol";
+import { useQueryRol } from "@/modules/administracion/hooks/rol/useQueryRol";
 import { useDataTable } from "@/hooks/use-data-table";
-import { ListarRolesType } from "@/interfaces/rol.interfaces";
+import { ListarRolesType } from "@/modules/administracion/interfaces/rol.interfaces";
 import { ColumnDef } from "@tanstack/react-table";
 import { parseAsInteger, useQueryState } from "nuqs";
 interface RolesTableParams<TData, TValue> {

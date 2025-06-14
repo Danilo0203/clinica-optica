@@ -2,7 +2,7 @@ import { searchParamsCache } from "@/lib/searchparams";
 import { RolesTable } from "./roles-tabla";
 import { columns } from "./roles-tabla/columns";
 import { getQueryClient } from "@/lib/get-query-client";
-import { listRoles } from "@/services/administracion/rol/rol.services";
+import { listRoles } from "@/modules/administracion/services/rol.services";
 import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 
 type UsuarioListingPage = {};

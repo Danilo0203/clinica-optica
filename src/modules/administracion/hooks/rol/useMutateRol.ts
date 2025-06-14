@@ -1,5 +1,5 @@
-import { Rol } from "@/schemas/administracion/rol/rol.schema";
-import { actualizarRol, crearRol, eliminarRol } from "@/services/administracion/rol/rol.services";
+import { Rol } from "@/modules/administracion/schemas/rol.schema";
+import { actualizarRol, crearRol, eliminarRol } from "@/modules/administracion/services/rol.services";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 
@@ -24,7 +24,7 @@ export const useMutateRol = () => {
       toast.error(`Error al crear el rol: ${error.message}`);
     },
     onSettled: (data) => {
-      toast.success(`Rol "${data.nombre}" creado exitosamente.`);
+      toast.success(`Rol "${data?.nombre}" creado exitosamente.`);
       queryClient.invalidateQueries({ queryKey: ["roles"] });
     },
   });
