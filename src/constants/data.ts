@@ -11,7 +11,6 @@ export type Product = {
   updated_at: string;
 };
 
-
 //Info: The following data is used for the sidebar navigation and Cmd K bar.
 export const navItems: NavItem[] = [
   {
@@ -76,7 +75,7 @@ export const navItems: NavItem[] = [
       // Sucursales
       {
         title: "Sucursales",
-        url: "/panel/sucursales",
+        url: "/administracion/sucursales",
         icon: "Store",
         shortcut: ["s", "s"],
         isActive: false,
