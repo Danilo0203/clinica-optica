@@ -1,80 +1,133 @@
-'use client';
-import { Badge } from '@/components/ui/badge';
-import { DataTableColumnHeader } from '@/components/ui/table/data-table-column-header';
-import { Product } from '@/constants/data';
-import { Column, ColumnDef } from '@tanstack/react-table';
-import { CheckCircle2, Text, XCircle } from 'lucide-react';
-import Image from 'next/image';
-import { CellAction } from './cell-action';
-import { CATEGORY_OPTIONS } from './options';
+"use client";
+import { Badge } from "@/components/ui/badge";
+import { DataTableColumnHeader } from "@/components/ui/table/data-table-column-header";
+import { Column, ColumnDef } from "@tanstack/react-table";
+import { CheckCircle2, Text, XCircle } from "lucide-react";
+import Image from "next/image";
+import { CellAction } from "./cell-action";
+import { CATEGORY_OPTIONS } from "./options";
+import { ListUsuarioType, Usuario } from "@/modules/administracion/interfaces/usuario.interfaces";
+import { cn } from "@/lib/utils";
 
-export const columns: ColumnDef<Product>[] = [
+export const columns: ColumnDef<Usuario>[] = [
+  // {
+  //   accessorKey: "fotografia",
+  //   header: "Foto",
+  //   cell: ({ row }) => {
+  //     console.log(row.original);
+  //     const data = row.original.map((usuario) => (
+  //       <div key={usuario.id} className="relative aspect-square">
+  //         <Image src={usuario.fotografia || ""} alt={usuario.nombre_completo} />
+  //       </div>
+  //     ));
+  //     return data;
+  //   },
+  //   meta: {
+  //     label: "Foto",
+  //     variant: "text",
+  //     icon: Text,
+  //   },
+  // },
   {
-    accessorKey: 'photo_url',
-    header: 'IMAGE',
+    id: "nombre",
+    accessorKey: "usuarios",
+    // header: ({ column }: { column: Column<ListUsuarioType, unknown> }) => (
+    //   <DataTableColumnHeader column={column} title="Nombre" />
+    // ),
+    header: "Nombre",
     cell: ({ row }) => {
-      return (
-        <div className='relative aspect-square'>
-          <Image
-            src={row.getValue('photo_url')}
-            alt={row.getValue('name')}
-            fill
-            className='rounded-lg'
-          />
-        </div>
-      );
-    }
-  },
-  {
-    id: 'name',
-    accessorKey: 'name',
-    header: ({ column }: { column: Column<Product, unknown> }) => (
-      <DataTableColumnHeader column={column} title='Name' />
-    ),
-    cell: ({ cell }) => <div>{cell.getValue<Product['name']>()}</div>,
-    meta: {
-      label: 'Name',
-      placeholder: 'Buscar usuarios...',
-      variant: 'text',
-      icon: Text
+      const nombre_completo = row.original.nombre_completo;
+      const username = row.original.username;
+      const data = nombre_completo.length > 0 ? nombre_completo : username;
+      return data;
     },
-    enableColumnFilter: true
+    meta: {
+      label: "Nombre",
+      placeholder: "Buscar usuarios...",
+      variant: "text",
+      icon: Text,
+    },
+    enableColumnFilter: true,
   },
   {
-    id: 'category',
-    accessorKey: 'category',
-    header: ({ column }: { column: Column<Product, unknown> }) => (
-      <DataTableColumnHeader column={column} title='Category' />
-    ),
-    cell: ({ cell }) => {
-      const status = cell.getValue<Product['category']>();
-      const Icon = status === 'active' ? CheckCircle2 : XCircle;
+    id: "email",
+    accessorKey: "email",
+    // header: ({ column }: { column: Column<Product, unknown> }) => (
+    //   <DataTableColumnHeader column={column} title="Category" />
+    // ),
+    header: "Email",
+    cell: ({ row }) => {
+      const data = row.original.email;
+      return data;
+    },
+    // enableColumnFilter: true,
+    meta: {
+      label: "Email",
+      // variant: "multiSelect",
+      // options: CATEGORY_OPTIONS,
+    },
+  },
+  {
+    id: "rol_nombre",
+    accessorKey: "rol_nombre",
+    // header: ({ column }: { column: Column<Product, unknown> }) => (
+    //   <DataTableColumnHeader column={column} title="Category" />
+    // ),
+    header: "Rol",
+    cell: ({ row }) => {
+      const data = row.original.rol_nombre;
 
+      return data;
+    },
+    // enableColumnFilter: true,
+    meta: {
+      label: "Rol",
+      // variant: "multiSelect",
+      // options: CATEGORY_OPTIONS,
+    },
+  },
+  {
+    id: "sucursal_nombre",
+    accessorKey: "sucursal_nombre",
+    // header: ({ column }: { column: Column<Product, unknown> }) => (
+    //   <DataTableColumnHeader column={column} title="Category" />
+    // ),
+    header: "Rol",
+    cell: ({ row }) => {
+      const data = row.original.sucursal_nombre;
+
+      return data;
+    },
+    // enableColumnFilter: true,
+    meta: {
+      label: "Sucursal",
+      // variant: "multiSelect",
+      // options: CATEGORY_OPTIONS,
+    },
+  },
+  {
+    accessorKey: "is_active",
+    header: "Estado",
+    cell: ({ row }) => {
+      const data = row.original.is_active;
+      const Icon = data ? CheckCircle2 : XCircle;
       return (
-        <Badge variant='outline' className='capitalize'>
+        <Badge
+          variant="outline"
+          className={cn(data ? "text-green-600 bg-green-300/20!" : "text-destructive bg-destructive/20!")}
+        >
           <Icon />
-          {status}
+          {data ? "Activo" : "Inactivo"}
         </Badge>
       );
     },
-    enableColumnFilter: true,
     meta: {
-      label: 'categorias',
-      variant: 'multiSelect',
-      options: CATEGORY_OPTIONS
-    }
-  },
-  {
-    accessorKey: 'price',
-    header: 'PRICE'
-  },
-  {
-    accessorKey: 'description',
-    header: 'DESCRIPTION'
+      label: "Estado",
+    },
   },
 
   {
-    id: 'actions',
-    cell: ({ row }) => <CellAction data={row.original} />
-  }
+    id: "actions",
+    cell: ({ row }) => <CellAction data={row.original} />,
+  },
 ];

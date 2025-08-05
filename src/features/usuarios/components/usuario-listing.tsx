@@ -1,8 +1,9 @@
-import { Product } from "@/constants/data";
-import { fakeProducts } from "@/constants/mock-api";
 import { searchParamsCache } from "@/lib/searchparams";
 import { columns } from "./usuarios-tabla/columns";
 import { UsuariosTable } from "./usuarios-tabla";
+import { getQueryClient } from "@/lib/get-query-client";
+import { listUsuarios } from "@/modules/administracion/services/usuario.services";
+import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 
 type UsuarioListingPage = {};
 
@@ -19,10 +20,17 @@ export default async function UsuarioListingPage({}: UsuarioListingPage) {
     ...(search && { search }),
     ...(categories && { categories: categories }),
   };
+  const queryClient = getQueryClient();
+  await queryClient.prefetchQuery({
+    queryKey: ["usuarios"],
+    queryFn: listUsuarios,
+  });
 
-  const data = await fakeProducts.getProducts(filters);
-  const totalProducts = data.total_products;
-  const products: Product[] = data.products;
-
-  return <UsuariosTable data={products} totalItems={totalProducts} columns={columns} />;
+  return (
+    <>
+      <HydrationBoundary state={dehydrate(queryClient)}>
+        <UsuariosTable columns={columns} />
+      </HydrationBoundary>
+    </>
+  );
 }

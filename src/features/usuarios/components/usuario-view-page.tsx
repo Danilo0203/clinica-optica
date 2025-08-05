@@ -1,22 +1,28 @@
-import { fakeProducts, Product } from "@/constants/mock-api";
+"use client";
 import { notFound } from "next/navigation";
-import ProductForm from "./usuario-form";
+import UsuarioForm from "./usuario-form";
+import { useQueryUsuarioId } from "@/modules/administracion/hooks/usuarios/useQueryUsuarios";
+import FormCardSkeleton from "@/components/form-card-skeleton";
 
 type TUsuarioViewPageProps = {
   usuarioId: string;
 };
 
-export default async function UsuarioViewPage({ usuarioId }: TUsuarioViewPageProps) {
-  let usuario = null;
-  let pageTitle = "Crear Nuevo Usuario";
-  if (usuarioId !== "nuevo") {
-    const data = await fakeProducts.getProductById(Number(usuarioId));
-    usuario = data.product as Product;
-    if (!usuario) {
-      notFound();
-    }
-    pageTitle = `Editar Usuario`;
+export default function UsuarioViewPage({ usuarioId }: TUsuarioViewPageProps) {
+  const isNuevo = usuarioId === "nuevo";
+  const id = Number(usuarioId);
+  const { usuarioIdQuery } = useQueryUsuarioId(id, { enabled: !isNuevo });
+
+  if (!isNuevo && usuarioIdQuery.isLoading) {
+    return <FormCardSkeleton />;
   }
 
-  return <ProductForm initialData={usuario} pageTitle={pageTitle} />;
+  if (!isNuevo && !usuarioIdQuery.data) {
+    notFound();
+  }
+
+  const usuario = isNuevo ? null : usuarioIdQuery.data;
+  const pageTitle = isNuevo ? "Crear Nuevo Usuario" : "Editar Usuario";
+
+  return <UsuarioForm initialData={usuario} pageTitle={pageTitle} />;
 }

@@ -17,3 +17,14 @@ apiConfig.interceptors.request.use((config) => {
   }
   return config;
 });
+
+apiConfig.interceptors.response.use(
+  (res) => res,
+  (error) => {
+    if (error.response?.status === 401) {
+      Cookies.remove("access_token");
+      window.location.href = "/auth/sign-in";
+    }
+    return Promise.reject(error);
+  }
+);

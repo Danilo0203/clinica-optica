@@ -43,6 +43,8 @@ import * as React from "react";
 import { OrgSwitcher } from "../org-switcher";
 import { icons } from "lucide-react";
 import { NavItem } from "@/types";
+import { BtnSignOut } from "@/features/auth/components/btn-signout";
+import { useQueryPerfil } from "@/modules/auth/hooks/useQueryPerfil";
 export const company = {
   name: "Acme Inc",
   logo: IconPhotoUp,
@@ -83,7 +85,8 @@ export default function AppSidebar() {
   React.useEffect(() => {
     // Side effects based on sidebar state changes
   }, [isOpen]);
-
+  const { usePerfil } = useQueryPerfil();
+  const user = usePerfil.data?.usuario;
   return (
     <Sidebar collapsible="icon">
       <SidebarHeader>
@@ -190,7 +193,7 @@ export default function AppSidebar() {
                   size="lg"
                   className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
                 >
-                  {/* {user && <UserAvatarProfile className="h-8 w-8 rounded-lg" showInfo user={user} />} */}
+                  {user && <UserAvatarProfile className="h-8 w-8 rounded-lg" showInfo user={user} />}
                   <IconChevronsDown className="ml-auto size-4" />
                 </SidebarMenuButton>
               </DropdownMenuTrigger>
@@ -202,7 +205,7 @@ export default function AppSidebar() {
               >
                 <DropdownMenuLabel className="p-0 font-normal">
                   <div className="px-1 py-1.5">
-                    {/* {user && <UserAvatarProfile className="h-8 w-8 rounded-lg" showInfo user={user} />} */}
+                    {user && <UserAvatarProfile className="h-8 w-8 rounded-lg" showInfo user={user} />}
                   </div>
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator />
@@ -222,9 +225,8 @@ export default function AppSidebar() {
                   </DropdownMenuItem>
                 </DropdownMenuGroup>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem>
-                  <IconLogout className="mr-2 h-4 w-4" />
-                  {/* <SignOutButton redirectUrl="/auth/sign-in" /> */}
+                <DropdownMenuItem asChild>
+                  <BtnSignOut />
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>

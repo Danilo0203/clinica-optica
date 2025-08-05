@@ -8,13 +8,13 @@ import {
   DropdownMenuLabel,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Product } from "@/constants/data";
+import { Usuario } from "@/modules/administracion/interfaces/usuario.interfaces";
 import { IconEdit, IconDotsVertical, IconTrash } from "@tabler/icons-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 interface CellActionProps {
-  data: Product;
+  data: Usuario;
 }
 
 export const CellAction: React.FC<CellActionProps> = ({ data }) => {
@@ -37,7 +37,7 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
         <DropdownMenuContent align="end">
           <DropdownMenuLabel>Acciones</DropdownMenuLabel>
 
-          <DropdownMenuItem onClick={() => router.push(`/administracion/roles/${data.id}`)}>
+          <DropdownMenuItem onClick={() => router.push(`/administracion/usuarios/${data.id}`)}>
             <IconEdit className="size-4" /> Actualizar
           </DropdownMenuItem>
           <DropdownMenuItem onClick={() => setOpen(true)} className="hover:bg-red-400/20! text-red-400!">
