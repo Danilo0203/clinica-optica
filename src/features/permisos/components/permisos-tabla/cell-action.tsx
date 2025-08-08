@@ -1,20 +1,10 @@
 "use client";
 import { AlertModal } from "@/components/modal/alert-modal";
 import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import { useFormPermiso } from "@/modules/administracion/hooks/permiso/useFormPermiso";
-import {
-  useMutatePermisoDelete,
-  useMutatePermisoUpdate,
-} from "@/modules/administracion/hooks/permiso/useMutatePermiso";
+import { useMutatePermisoDelete, useMutatePermisoUpdate } from "@/modules/administracion/hooks/permiso/useMutatePermiso";
 import { ListarPermisosType } from "@/modules/administracion/interfaces/permisos.interfaces";
-import { IconEdit, IconDotsVertical, IconTrash } from "@tabler/icons-react";
+import { IconEdit, IconTrash } from "@tabler/icons-react";
 import { useEffect, useState } from "react";
 import { FormPermiso } from "../modal/form-permiso";
 import { useQuery } from "@tanstack/react-query";
@@ -31,11 +21,14 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
   const [openActuaizar, setOpenActualizar] = useState(false);
   const { form, onSubmit } = useFormPermiso(setOpen);
 
-  // Eliminar Permiso
+  // desactivar permiso
   const mutateDeletePermiso = useMutatePermisoDelete(setOpen);
   const onConfirmDelete = async () => {
     await mutateDeletePermiso.mutateAsync(data.id);
   };
+
+  // actualizar permiso
+  const mutateUpadatePermiso = useMutatePermisoUpdate(setOpenActualizar);
 
   // Actualizar Permiso
   const mutateUpadatePermiso = useMutatePermisoUpdate(setOpenActualizar);
@@ -122,24 +115,13 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu> */}
-
       <div className="flex items-center gap-2">
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <Button variant="ghost" className="h-8 w-8 p-0" onClick={openUpdateModal}>
-              <IconEdit className="size-4" />
-            </Button>
-          </TooltipTrigger>
-          <TooltipContent>Actualizar Permiso</TooltipContent>
-        </Tooltip>
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <Button variant="ghost" className="h-8 w-8 p-0" onClick={() => setOpen(true)}>
-              <IconTrash className="size-4 text-red-400" />
-            </Button>
-          </TooltipTrigger>
-          <TooltipContent>Desactivar Permiso</TooltipContent>
-        </Tooltip>
+        <Button variant="ghost" className="h-8 w-8 p-0 cursor-pointer" onClick={openUpdateModal}>
+          <IconEdit className="size-4" />
+        </Button>
+        <Button variant="ghost" className="h-8 w-8 p-0 cursor-pointer" onClick={() => setOpen(true)}>
+          <IconTrash className="size-4 text-red-400" />
+        </Button>
       </div>
     </>
   );

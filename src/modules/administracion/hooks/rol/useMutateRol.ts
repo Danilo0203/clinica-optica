@@ -1,10 +1,6 @@
 import { Rol } from "@/modules/administracion/schemas/rol.schema";
-import {
-  actualizarRol,
-  asignarPermisosRol,
-  crearRol,
-  eliminarRol,
-} from "@/modules/administracion/services/rol.services";
+import { ListarRolesType } from "@/modules/administracion/interfaces/rol.interfaces";
+import { actualizarRol, asignarPermisos, crearRol, eliminarRol } from "@/modules/administracion/services/rol.services";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 
@@ -29,6 +25,7 @@ export const useMutateRol = () => {
       toast.error(`Error al crear el rol: ${error.message}`);
     },
     onSuccess: (data) => {
+      toast.success(`Rol "${data?.nombre}" creado exitosamente.`);
       queryClient.invalidateQueries({ queryKey: ["roles"] });
       toast.success(`Rol "${data?.nombre}" creado exitosamente.`);
     },
@@ -47,9 +44,7 @@ export const useMutateRolDelete = (setOpen: (open: boolean) => void) => {
 
       const previousRoles = queryClient.getQueryData<Rol[]>(["roles"]);
 
-      queryClient.setQueryData<(Partial<Rol> & { id: number })[]>(["roles"], (old = []) =>
-        old.filter((rol) => rol.id !== idRol)
-      );
+      queryClient.setQueryData<(Partial<Rol> & { id: number })[]>(["roles"], (old = []) => old.filter((rol) => rol.id !== idRol));
 
       return { previousRoles };
     },
@@ -61,8 +56,8 @@ export const useMutateRolDelete = (setOpen: (open: boolean) => void) => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["roles"] });
-      toast.success(`Rol eliminado exitosamente`);
       setOpen(false);
+      toast.success(`Rol eliminado exitosamente`);
     },
   });
 };
@@ -95,23 +90,4 @@ export const useMutateRolUpdate = (setOpenActualizar: (open: boolean) => void) =
   });
 };
 
-export const useMutateAsignarPermisos = (setOpen: (open: boolean) => void) => {
-  const queryClient = useQueryClient();
-
-  return useMutation({
-    mutationFn: async (params: { rolId: number; permisos: number[] }) =>
-      asignarPermisosRol(params.rolId, params.permisos),
-
-    onSuccess: (_data, variables) => {
-      queryClient.invalidateQueries({ queryKey: ["roles"] });
-      queryClient.invalidateQueries({ queryKey: ["rol", variables.rolId] });
-      queryClient.invalidateQueries({ queryKey: ["permiso", variables.rolId] });
-      toast.success("Permisos asignados correctamente.");
-      setOpen(false);
-    },
-
-    onError: (error: any) => {
-      toast.error(`Error al asignar permisos: ${error?.message ?? "desconocido"}`);
-    },
-  });
-};
+export const useMutateAsignarPermisos = (setOpenAsignarRoles: (open: boolean) => void) => {};

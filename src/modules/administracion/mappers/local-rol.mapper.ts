@@ -1,4 +1,4 @@
-import { AsignarPermisosARol, Rol } from "../models/rol.model";
+import { AsigarPermisosARol, Rol } from "../models/rol.model";
 
 export const localRolMapper = (rol: Rol) => {
   const { descripcion, id, nombre, permisos } = rol;
@@ -10,12 +10,12 @@ export const localRolMapper = (rol: Rol) => {
   });
 };
 
-export const localAsignarPermisosARolMapper = (rol: AsignarPermisosARol) => {
+export const localAsigarPermisosARolMapper = (rol: AsigarPermisosARol) => {
   const { id, nombre, permisos, descripcion } = rol;
-  return new AsignarPermisosARol({
+  return new AsigarPermisosARol({
     id: id,
-    descripcion: descripcion,
     nombre: nombre,
     permisos: permisos,
+    descripcion: descripcion,
   });
 };

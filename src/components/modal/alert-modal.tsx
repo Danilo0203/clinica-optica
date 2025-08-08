@@ -16,17 +16,7 @@ interface AlertModalProps {
   className?: string;
 }
 
-export const AlertModal: React.FC<AlertModalProps> = ({
-  isOpen,
-  onClose,
-  onConfirm,
-  loading,
-  title,
-  description,
-  children,
-  icon,
-  className,
-}) => {
+export const AlertModal: React.FC<AlertModalProps> = ({ isOpen, onClose, onConfirm, loading, title, description, children, icon }) => {
   const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
@@ -41,10 +31,10 @@ export const AlertModal: React.FC<AlertModalProps> = ({
     <Modal title={title} description={description} isOpen={isOpen} onClose={onClose} icon={icon} className={className}>
       {children}
       <div className="flex w-full items-center justify-end space-x-2 pt-6">
-        <Button disabled={loading} variant="outline" onClick={onClose}>
+        <Button disabled={loading} variant="outline" onClick={onClose} className="cursor-pointer">
           Cancelar
         </Button>
-        <Button disabled={loading} variant="default" onClick={onConfirm}>
+        <Button disabled={loading} variant="default" onClick={onConfirm} className="cursor-pointer">
           {loading && <Loader2 className="animate-spin" />}
           Confirmar
         </Button>

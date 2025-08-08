@@ -14,7 +14,7 @@ export const useMutatePermiso = () => {
         ...old,
         {
           ...nuevoPermiso,
-          id: Date.now(), // Simular un ID único para el nuevo rol
+          id: Date.now(), // Simular un ID único para el nuevo permiso
         },
       ]);
       return { previousPermisos };
@@ -42,21 +42,19 @@ export const useMutatePermisoDelete = (setOpen: (open: boolean) => void) => {
       const previousPermisos = queryClient.getQueryData<Permiso[]>(["permisos"]);
 
       queryClient.setQueryData<(Partial<Permiso> & { id: number })[]>(["permisos"], (old = []) =>
-        old.filter((rol) => rol.id !== idRol)
+        old.map((rol) => (rol.id === idRol ? { ...rol, activo: false } : rol))
       );
 
       return { previousPermisos };
     },
     onError: (error, idRol, context) => {
-      toast.error(`Error al desactivar el permiso: ${error.message}`);
-      if (context?.previousPermisos) {
-        queryClient.setQueryData(["permisos"], context.previousPermisos);
-      }
+      queryClient.setQueryData(["permisos"], context?.previousPermisos);
+      toast.error(`Error al eliminar el permiso: ${error.message}`);
     },
     onSuccess: (data) => {
       setOpen(false);
+      toast.success(`Permiso desactivado exitosamente`);
       queryClient.invalidateQueries({ queryKey: ["permisos"] });
-      toast.success(data?.mensaje || "Permiso desactivado exitosamente");
     },
   });
 };

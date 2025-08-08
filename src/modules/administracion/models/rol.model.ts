@@ -1,4 +1,4 @@
-import { ListarRolesType, Permiso } from "../interfaces/rol.interfaces";
+import { AsigarPermisosARolType, ListarRolesType, Permiso } from "../interfaces/rol.interfaces";
 
 export class Rol {
   id: number;
@@ -13,12 +13,12 @@ export class Rol {
   }
 }
 
-export class AsignarPermisosARol {
+export class AsigarPermisosARol {
   id: number;
   nombre: string;
   permisos: Permiso[];
   descripcion: string;
-  constructor({ id, nombre, permisos, descripcion }: AsignarPermisosARol) {
+  constructor({ id, nombre, permisos, descripcion }: AsigarPermisosARolType) {
     this.id = id;
     this.nombre = nombre;
     this.permisos = permisos;

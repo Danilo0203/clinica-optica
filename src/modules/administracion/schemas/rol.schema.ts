@@ -9,3 +9,9 @@ export const rolSchema = z.object({
 });
 
 export type Rol = z.infer<typeof rolSchema>;
+
+export const asignarPermisosARolSchema = z.object({
+  permisos: z.array(z.number()),
+});
+
+export type AsigarPermisosARol = z.infer<typeof asignarPermisosARolSchema>;

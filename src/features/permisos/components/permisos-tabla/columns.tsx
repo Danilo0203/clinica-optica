@@ -3,7 +3,7 @@ import { Badge } from "@/components/ui/badge";
 import { ColumnDef } from "@tanstack/react-table";
 import { CheckCircle2, Text, XCircle } from "lucide-react";
 import { CellAction } from "./cell-action";
-import { CATEGORY_OPTIONS } from "./options";
+// import { CATEGORY_OPTIONS } from "./options";
 import { ListarPermisosType } from "@/modules/administracion/interfaces/permisos.interfaces";
 import { cn } from "@/lib/utils";
 
@@ -57,10 +57,7 @@ export const columns: ColumnDef<ListarPermisosType>[] = [
       const data = row.original.activo;
       const Icon = data ? CheckCircle2 : XCircle;
       return (
-        <Badge
-          variant="outline"
-          className={cn(data ? "text-green-600 bg-green-300/20!" : "text-destructive bg-destructive/20!")}
-        >
+        <Badge variant="outline" className={cn(data ? "text-green-600 bg-green-300/20!" : "text-destructive bg-destructive/20!")}>
           <Icon />
           {data ? "Activo" : "Inactivo"}
         </Badge>

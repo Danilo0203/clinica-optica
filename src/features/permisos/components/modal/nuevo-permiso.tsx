@@ -5,7 +5,6 @@ import { IconPlus } from "@tabler/icons-react";
 import { useState } from "react";
 import { FormPermiso } from "./form-permiso";
 import { useFormPermiso } from "@/modules/administracion/hooks/permiso/useFormPermiso";
-import { Permiso } from "@/modules/administracion/schemas/permiso.schema";
 
 export const ModalNuevoPermiso = () => {
   const [open, setOpen] = useState(false);
@@ -13,7 +12,7 @@ export const ModalNuevoPermiso = () => {
 
   return (
     <>
-      <Button onClick={() => setOpen(true)} className="text-xs md:text-sm">
+      <Button onClick={() => setOpen(true)} className="text-xs md:text-sm cursor-pointer">
         <IconPlus className="size-4" /> Nuevo Permiso
       </Button>
       <AlertModal
