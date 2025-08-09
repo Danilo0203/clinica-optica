@@ -44,11 +44,11 @@ export const columns: ColumnDef<ListarPermisosType>[] = [
       return data;
     },
     enableColumnFilter: true,
-    meta: {
-      label: "categorias",
-      variant: "multiSelect",
-      options: CATEGORY_OPTIONS,
-    },
+    // meta: {
+    //   label: "categorias",
+    //   variant: "multiSelect",
+    //   options: CATEGORY_OPTIONS,
+    // },
   },
   {
     accessorKey: "activo",

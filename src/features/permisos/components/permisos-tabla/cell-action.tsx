@@ -29,16 +29,19 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
   const [open, setOpen] = useState(false);
   const [openActuaizar, setOpenActualizar] = useState(false);
   const { form, onSubmit } = useFormPermiso(setOpen);
+
+  // Eliminar Permiso
   const mutateDeletePermiso = useMutatePermisoDelete(setOpen);
   const onConfirmDelete = async () => {
     await mutateDeletePermiso.mutateAsync(data.id);
   };
-  const mutateUpadatePermiso = useMutatePermisoUpdate(setOpenActualizar);
 
+  // Actualizar Permiso
+  const mutateUpadatePermiso = useMutatePermisoUpdate(setOpenActualizar);
   const onConfirmUpdate = async () => {
     await mutateUpadatePermiso.mutateAsync({ ...form.getValues(), id: data.id });
   };
-  
+
   const {
     data: permiso,
     isLoading,
@@ -68,7 +71,7 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
       {/* Desactivar Permiso */}
       <AlertModal
         title="Desactivar Permiso"
-        description="Esta acción eliminará el permiso de forma permanente."
+        description="Esta acción desactivará el permiso."
         isOpen={open}
         onClose={() => setOpen(false)}
         onConfirm={onConfirmDelete}
@@ -77,7 +80,7 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
       >
         <div>
           <p>
-            ¿Estás seguro de que deseas eliminar el permiso <strong>"{data.nombre}"</strong>?
+            ¿Estás seguro de que deseas desactivar el permiso <strong>"{data.nombre}"</strong>?
           </p>
         </div>
       </AlertModal>
@@ -101,7 +104,7 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
           <FormPermiso form={form} onSubmit={onSubmit} />
         )}
       </AlertModal>
-      <DropdownMenu modal={false}>
+      {/* <DropdownMenu modal={false}>
         <DropdownMenuTrigger asChild>
           <Button variant="ghost" className="h-8 w-8 p-0">
             <span className="sr-only">Open menu</span>
@@ -117,7 +120,16 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
             <IconTrash className="size-4 text-red-400" /> Desactivar
           </DropdownMenuItem>
         </DropdownMenuContent>
-      </DropdownMenu>
+      </DropdownMenu> */}
+
+      <div className="flex items-center gap-2">
+        <Button variant="ghost" className="h-8 w-8 p-0" onClick={openUpdateModal}>
+          <IconEdit className="size-4" />
+        </Button>
+        <Button variant="ghost" className="h-8 w-8 p-0" onClick={() => setOpen(true)}>
+          <IconTrash className="size-4 text-red-400" />
+        </Button>
+      </div>
     </>
   );
 };

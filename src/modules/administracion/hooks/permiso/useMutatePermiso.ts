@@ -21,10 +21,10 @@ export const useMutatePermiso = () => {
     },
     onError: (error, nuevoPermiso, context) => {
       queryClient.setQueryData(["permisos"], context?.previousPermisos);
-      toast.error(`Error al crear el rol: ${error.message}`);
+      toast.error(`Error al crear el permiso: ${error.message}`);
     },
-    onSettled: (data) => {
-      toast.success(`Rol "${data?.nombre}" creado exitosamente.`);
+    onSuccess: (data) => {
+      toast.success(`Permiso "${data?.nombre}" creado exitosamente.`);
       queryClient.invalidateQueries({ queryKey: ["permisos"] });
     },
   });
@@ -39,28 +39,24 @@ export const useMutatePermisoDelete = (setOpen: (open: boolean) => void) => {
     onMutate: async (idRol: number) => {
       await queryClient.cancelQueries({ queryKey: ["permisos"] });
 
-      const previousRoles = queryClient.getQueryData<Permiso[]>(["permisos"]);
+      const previousPermisos = queryClient.getQueryData<Permiso[]>(["permisos"]);
 
       queryClient.setQueryData<(Partial<Permiso> & { id: number })[]>(["permisos"], (old = []) =>
         old.filter((rol) => rol.id !== idRol)
       );
 
-      return { previousRoles };
+      return { previousPermisos };
     },
     onError: (error, idRol, context) => {
-      toast.error(`Error al eliminar el rol: ${error.message}`);
-      if (context?.previousRoles) {
-        queryClient.setQueryData(["permisos"], context.previousRoles);
+      toast.error(`Error al desactivar el permiso: ${error.message}`);
+      if (context?.previousPermisos) {
+        queryClient.setQueryData(["permisos"], context.previousPermisos);
       }
     },
-    onSuccess: () => {
+    onSuccess: (data) => {
       setOpen(false);
-      toast.success(`Rol eliminado exitosamente`);
-      queryClient.clear();
-    },
-    onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ["permisos"] });
-      queryClient.clear();
+      toast.success(data?.mensaje || "Permiso desactivado exitosamente");
     },
   });
 };
@@ -80,15 +76,12 @@ export const useMutatePermisoUpdate = (setOpenActualizar: (open: boolean) => voi
     },
     onError: (error, permisoActualizado, context) => {
       queryClient.setQueryData(["permisos"], context?.previousPermisos);
-      toast.error(`Error al actualizar el rol: ${error.message}`);
+      toast.error(`Error al actualizar el permiso: ${error.message}`);
     },
     onSuccess: (data) => {
       toast.success(`Permiso "${data.nombre}" actualizado correctamente.`);
       setOpenActualizar(false);
       queryClient.invalidateQueries({ queryKey: ["permisos"] });
-    },
-    onSettled: () => {
-      // queryClient.invalidateQueries({ queryKey: ["permisos"] });
     },
   });
 };
