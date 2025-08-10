@@ -147,7 +147,7 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
             all={permisoQuery.data ?? []}
             value={selectedPermisos}
             onChange={setSelectedPermisos}
-            height={300}
+            height={250}
           />
         )}
       </AlertModal>

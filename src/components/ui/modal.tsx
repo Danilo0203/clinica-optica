@@ -23,7 +23,14 @@ export const Modal: React.FC<ModalProps> = ({ title, description, isOpen, onClos
 
   return (
     <Dialog open={isOpen} onOpenChange={onChange}>
-      <DialogContent className={cn(className)}>
+      <DialogContent
+        className={cn(
+          "sm:max-w-[500px] w-[calc(100vw-2rem)]",
+          // 👇 hace scrolleable el contenido en móvil
+          "max-h-[90svh] overflow-y-auto",
+          className
+        )}
+      >
         <DialogHeader>
           <DialogTitle className="flex items-center gap-1">
             {icon ? <Icon className="size-5 mb-1" /> : null} <span> {title}</span>

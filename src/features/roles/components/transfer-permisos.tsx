@@ -88,7 +88,7 @@ export default function TransferPermisos({ all, value, onChange, height = 280 }:
               className="pl-8"
             />
           </div>
-          <div className="flex items-center justify-between pt-2">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between pt-2">
             <Button
               type="button"
               variant="ghost"
@@ -206,7 +206,7 @@ export default function TransferPermisos({ all, value, onChange, height = 280 }:
               className="pl-8"
             />
           </div>
-          <div className="flex items-center justify-between pt-2">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between pt-2">
             <Button
               type="button"
               variant="ghost"
