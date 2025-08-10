@@ -13,6 +13,7 @@ interface AlertModalProps {
   description?: string;
   children?: React.ReactNode;
   icon?: keyof typeof icons;
+  className?: string;
 }
 
 export const AlertModal: React.FC<AlertModalProps> = ({
@@ -24,6 +25,7 @@ export const AlertModal: React.FC<AlertModalProps> = ({
   description,
   children,
   icon,
+  className,
 }) => {
   const [isMounted, setIsMounted] = useState(false);
 
@@ -36,7 +38,7 @@ export const AlertModal: React.FC<AlertModalProps> = ({
   }
 
   return (
-    <Modal title={title} description={description} isOpen={isOpen} onClose={onClose} icon={icon}>
+    <Modal title={title} description={description} isOpen={isOpen} onClose={onClose} icon={icon} className={className}>
       {children}
       <div className="flex w-full items-center justify-end space-x-2 pt-6">
         <Button disabled={loading} variant="outline" onClick={onClose}>
