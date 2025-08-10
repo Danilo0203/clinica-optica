@@ -1,7 +1,7 @@
-import { ListarRolesType } from "@/modules/administracion/interfaces/rol.interfaces";
+import { AsignarPermisosARol, ListarRolesType } from "@/modules/administracion/interfaces/rol.interfaces";
 import { Rol } from "@/modules/administracion/schemas/rol.schema";
 import { apiConfig } from "@/services/configAxios";
-import { localRolMapper } from "../mappers/local-rol.mapper";
+import { localAsignarPermisosARolMapper, localRolMapper } from "../mappers/local-rol.mapper";
 
 export const crearRol = async (data: Rol): Promise<ListarRolesType> => {
   const res = await apiConfig.post<ListarRolesType>("/api/users/roles/crear/", data);
@@ -29,4 +29,11 @@ export const actualizarRol = async (data: Partial<Rol> & { id: number }): Promis
 export const obtenerRolId = async (id: number): Promise<ListarRolesType> => {
   const res = await apiConfig.get<ListarRolesType>(`/api/users/roles/${id}/`);
   return localRolMapper(res.data);
+};
+
+export const asignarPermisosRol = async (rolId: number, permisos: number[]): Promise<AsignarPermisosARol> => {
+  const { data } = await apiConfig.post<AsignarPermisosARol>(`/api/users/roles/${rolId}/asignar-permisos/`, {
+    permisos,
+  });
+  return localAsignarPermisosARolMapper(data);
 };
