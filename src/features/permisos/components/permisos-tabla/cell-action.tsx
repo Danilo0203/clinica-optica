@@ -20,6 +20,7 @@ import { FormPermiso } from "../modal/form-permiso";
 import { useQuery } from "@tanstack/react-query";
 import { obtenerPermisoId } from "@/modules/administracion/services/permiso.services";
 import { Loader2 } from "lucide-react";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 
 interface CellActionProps {
   data: ListarPermisosType;
@@ -123,12 +124,22 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
       </DropdownMenu> */}
 
       <div className="flex items-center gap-2">
-        <Button variant="ghost" className="h-8 w-8 p-0" onClick={openUpdateModal}>
-          <IconEdit className="size-4" />
-        </Button>
-        <Button variant="ghost" className="h-8 w-8 p-0" onClick={() => setOpen(true)}>
-          <IconTrash className="size-4 text-red-400" />
-        </Button>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Button variant="ghost" className="h-8 w-8 p-0" onClick={openUpdateModal}>
+              <IconEdit className="size-4" />
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent>Actualizar Permiso</TooltipContent>
+        </Tooltip>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Button variant="ghost" className="h-8 w-8 p-0" onClick={() => setOpen(true)}>
+              <IconTrash className="size-4 text-red-400" />
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent>Desactivar Permiso</TooltipContent>
+        </Tooltip>
       </div>
     </>
   );
