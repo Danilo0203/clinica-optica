@@ -28,7 +28,7 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
   };
 
   // actualizar permiso
-  const mutateUpadatePermiso = useMutatePermisoUpdate(setOpenActualizar);
+  // const mutateUpadatePermiso = useMutatePermisoUpdate(setOpenActualizar);
 
   // Actualizar Permiso
   const mutateUpadatePermiso = useMutatePermisoUpdate(setOpenActualizar);

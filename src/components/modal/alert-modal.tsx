@@ -16,7 +16,7 @@ interface AlertModalProps {
   className?: string;
 }
 
-export const AlertModal: React.FC<AlertModalProps> = ({ isOpen, onClose, onConfirm, loading, title, description, children, icon }) => {
+export const AlertModal: React.FC<AlertModalProps> = ({ isOpen, onClose, onConfirm, loading, title, description, children, icon, className }) => {
   const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
