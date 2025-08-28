@@ -73,7 +73,7 @@ export default function TransferPermisos({ all, value, onChange, height = 280 }:
   return (
     <div className="w-full grid grid-cols-1 md:grid-cols-[1fr_auto_1fr] gap-4">
       {/* LEFT: Disponibles */}
-      <Card className="border-muted">
+      <Card className="border-muted gap-0">
         <CardHeader className="py-3">
           <div className="flex items-center justify-between">
             <CardTitle className="text-base">Disponibles</CardTitle>
@@ -191,7 +191,7 @@ export default function TransferPermisos({ all, value, onChange, height = 280 }:
       </div>
 
       {/* RIGHT: Asignados */}
-      <Card className="border-muted">
+      <Card className="border-muted gap-0">
         <CardHeader className="py-3">
           <div className="flex items-center justify-between">
             <CardTitle className="text-base">Asignados</CardTitle>

@@ -3,8 +3,9 @@ import { FileUploader } from "@/components/file-uploader";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, FormDescription } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { Switch } from "@/components/ui/switch";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
 import { useQueryRol } from "@/modules/administracion/hooks/rol/useQueryRol";
@@ -12,10 +13,12 @@ import { useQuerySucursal } from "@/modules/administracion/hooks/sucursal/useQue
 import { useQueryUsuarioId } from "@/modules/administracion/hooks/usuarios/useQueryUsuarios";
 import { UsuarioType } from "@/modules/administracion/interfaces/usuario.interfaces";
 import { Usuario, usuarioSchema } from "@/modules/administracion/schemas/usuario.schema";
-import { crearUsuario } from "@/modules/administracion/services/usuario.services";
+import { actualizarUsuario, crearUsuario } from "@/modules/administracion/services/usuario.services";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Check, ChevronsUpDown } from "lucide-react";
+import { AxiosError } from "axios";
+import { Check, ChevronsUpDown, Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -27,6 +30,8 @@ export default function UsuariosForm({
   initialData?: UsuarioType | null;
   pageTitle: string;
 }) {
+  console.log(initialData);
+  const isEdit = Boolean(initialData);
   const form = useForm<Usuario>({
     resolver: zodResolver(usuarioSchema),
     values: {
@@ -44,17 +49,90 @@ export default function UsuariosForm({
     mode: "onChange",
   });
   const router = useRouter();
+  const isSubmitting = form.formState.isSubmitting;
 
   async function onSubmit(values: Usuario) {
-    console.log("Formulario enviado con los siguientes valores:", values);
+    const { dirtyFields } = form.formState;
+
+    // Crear vs Editar estaba invertido. Si hay initialData => EDITAR, sino => CREAR
+    if (!isEdit) {
+      try {
+        const payload = {
+          username: values.username,
+          nombre_completo: values.nombre_completo,
+          email: values.email,
+          fotografia:
+            Array.isArray(values.fotografia) && values.fotografia.length > 0 ? values.fotografia[0] : undefined,
+          rol: values.rol ? Number(values.rol) : undefined,
+          sucursal: values.sucursal ? Number(values.sucursal) : undefined,
+          is_active: values.is_active,
+          is_staff: values.is_staff,
+          password: values.password,
+          confirmar_password: values.confirmar_password,
+        } as const;
+
+        const res = await crearUsuario(payload as unknown as Usuario);
+        toast.success(`Usuario ${res.nombre_completo} creado exitosamente`);
+        form.reset();
+        router.push("/administracion/usuarios");
+      } catch (error) {
+        if (error instanceof AxiosError) {
+          console.error("Error al crear el usuario:", error);
+          toast.error(error.response?.data?.error || "Error al crear el usuario. Por favor, inténtelo de nuevo.");
+        } else {
+          console.error("Error inesperado:", error);
+          toast.error("Error inesperado al crear el usuario.");
+        }
+      }
+      return;
+    }
+
+    // MODO EDICIÓN: enviar solo los campos modificados
+    const patch: Partial<Usuario> = {};
+
+    if (dirtyFields.username) patch.username = values.username;
+    if (dirtyFields.nombre_completo) patch.nombre_completo = values.nombre_completo;
+    if (dirtyFields.email) patch.email = values.email;
+    if (dirtyFields.fotografia) {
+      // si usas single file, tomar primer valor
+      const foto = Array.isArray(values.fotografia) ? values.fotografia[0] : values.fotografia;
+      if (foto) (patch as any).fotografia = foto;
+    }
+    if (dirtyFields.rol) patch.rol = values.rol ? values.rol : undefined;
+    if (dirtyFields.sucursal) patch.sucursal = values.sucursal ? values.sucursal : undefined;
+    if (dirtyFields.is_active) patch.is_active = values.is_active;
+    if (dirtyFields.is_staff) patch.is_staff = values.is_staff;
+
+    // Password solo si se cambió y coincide la confirmación
+    const changedPassword = dirtyFields.password || dirtyFields.confirmar_password;
+    if (changedPassword) {
+      if (values.password && values.confirmar_password && values.password === values.confirmar_password) {
+        patch.password = values.password;
+        (patch as any).confirmar_password = values.confirmar_password;
+      } else {
+        toast.error("Las contraseñas no coinciden o están incompletas.");
+        return;
+      }
+    }
+
+    // Si no hay nada que actualizar, notificar y salir
+    if (Object.keys(patch).length === 0) {
+      toast.message("No hay cambios para guardar.");
+      return;
+    }
+
     try {
-      const res = await crearUsuario(values);
-      toast.success(`Usuario ${res.nombre_completo} creado exitosamente`);
-      form.reset();
+      const res = await actualizarUsuario({ id: initialData?.id ?? 0, values: patch });
+      toast.success(`Usuario ${res?.nombre_completo ?? values.nombre_completo} actualizado correctamente`);
       router.push("/administracion/usuarios");
     } catch (error) {
-      console.error("Error al crear el usuario:", error);
-      toast.error("Error al crear el usuario. Por favor, inténtelo de nuevo.");
+      if (error instanceof AxiosError) {
+        console.error("Error al actualizar el usuario:", error);
+        toast.error(error.response?.data?.error || "Error al actualizar el usuario. Por favor, inténtelo de nuevo.");
+      } else {
+        console.error("Error inesperado:", error);
+        toast.error("Error inesperado al actualizar el usuario.");
+      }
     }
   }
 
@@ -69,31 +147,44 @@ export default function UsuariosForm({
     <Card className="mx-auto w-full">
       <CardHeader>
         <CardTitle className="text-left text-2xl font-bold">{pageTitle}</CardTitle>
+        <p className="text-sm text-muted-foreground">
+          Complete los datos del usuario. Los campos marcados con * son obligatorios.
+        </p>
       </CardHeader>
       <CardContent>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-            <FormField
-              control={form.control}
-              name="fotografia"
-              render={({ field }) => (
-                <div className="space-y-6">
-                  <FormItem className="w-full">
-                    <FormLabel>Fotografía</FormLabel>
-                    <FormControl>
-                      <FileUploader
-                        value={field.value ?? undefined}
-                        onValueChange={field.onChange}
-                        maxFiles={1}
-                        maxSize={4 * 1024 * 1024}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                </div>
-              )}
-            />
+            {/* <div>
+              <h3 className="text-lg font-semibold">Fotografía</h3>
+              <p className="text-sm text-muted-foreground mb-4">Opcional. Formato JPG/PNG, máximo 4MB.</p>
+              <FormField
+                control={form.control}
+                name="fotografia"
+                render={({ field }) => (
+                  <div className="space-y-2">
+                    <FormItem className="w-full">
+                      <FormLabel>Subir fotografía</FormLabel>
+                      <FormControl>
+                        <FileUploader
+                          value={field.value ?? undefined}
+                          onValueChange={field.onChange}
+                          maxFiles={1}
+                          maxSize={4 * 1024 * 1024}
+                        />
+                      </FormControl>
+                      <FormDescription>Esta imagen se mostrará en el perfil del usuario.</FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  </div>
+                )}
+              />
+            </div>
+            <hr className="my-6" /> */}
 
+            <h3 className="text-lg font-semibold mb-0">Datos básicos *</h3>
+            <p className="text-sm text-muted-foreground mb-4">
+              Nombre de usuario, nombre completo y correo electrónico.
+            </p>
             <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
               <FormField
                 control={form.control}
@@ -134,6 +225,11 @@ export default function UsuariosForm({
                   </FormItem>
                 )}
               />
+            </div>
+            <hr className="my-6" />
+            <h3 className="text-lg font-semibold mb-0">Asignación *</h3>
+            <p className="text-sm text-muted-foreground mb-4">Seleccione el rol y la sucursal para el usuario.</p>
+            <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
               <FormField
                 control={form.control}
                 name="rol"
@@ -264,7 +360,42 @@ export default function UsuariosForm({
                 )}
               />
             </div>
+            <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+              <FormField
+                control={form.control}
+                name="is_active"
+                render={({ field }) => (
+                  <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
+                    <div className="space-y-0.5">
+                      <FormLabel>Activo</FormLabel>
+                      <FormDescription>Si está desactivado, el usuario no podrá iniciar sesión.</FormDescription>
+                    </div>
+                    <FormControl>
+                      <Switch checked={field.value} onCheckedChange={field.onChange} />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
+              {/* <FormField
+                control={form.control}
+                name="is_staff"
+                render={({ field }) => (
+                  <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
+                    <div className="space-y-0.5">
+                      <FormLabel>Staff</FormLabel>
+                      <FormDescription>Otorga acceso a herramientas internas del panel.</FormDescription>
+                    </div>
+                    <FormControl>
+                      <Switch checked={field.value} onCheckedChange={field.onChange} />
+                    </FormControl>
+                  </FormItem>
+                )}
+              /> */}
+            </div>
+            <hr className="my-6" />
 
+            <h3 className="text-lg font-semibold mb-0">Credenciales *</h3>
+            <p className="text-sm text-muted-foreground mb-4">Cree una contraseña segura para el usuario.</p>
             <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
               <FormField
                 control={form.control}
@@ -275,6 +406,7 @@ export default function UsuariosForm({
                     <FormControl>
                       <Input type="password" placeholder="Ingrese la contraseña" {...field} />
                     </FormControl>
+                    <FormDescription>Mínimo 8 caracteres. Use mayúsculas, minúsculas y números.</FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}
@@ -288,13 +420,22 @@ export default function UsuariosForm({
                     <FormControl>
                       <Input type="password" placeholder="Confirme la contraseña" {...field} />
                     </FormControl>
+                    <FormDescription>Debe coincidir con la contraseña.</FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}
               />
             </div>
 
-            <Button type="submit">Guardar</Button>
+            <div className="flex items-center gap-3 pt-2">
+              <Button type="submit" disabled={isSubmitting}>
+                {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                Guardar
+              </Button>
+              <Button type="button" variant="outline" asChild>
+                <Link href="/administracion/usuarios">Cancelar</Link>
+              </Button>
+            </div>
           </form>
         </Form>
       </CardContent>

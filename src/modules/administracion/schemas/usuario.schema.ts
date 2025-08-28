@@ -21,7 +21,7 @@ export const usuarioSchema = z
     }),
     is_active: z.boolean().default(true),
     is_staff: z.boolean().default(true),
-    password: z.string().min(6, { message: "La contraseña debe tener al menos 6 caracteres" }),
+    password: z.string().min(8, { message: "La contraseña debe tener al menos 6 caracteres" }),
     confirmar_password: z.string().min(6, {
       message: "La confirmación de contraseña debe tener al menos 6 caracteres",
     }),
