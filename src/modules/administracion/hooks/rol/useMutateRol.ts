@@ -90,4 +90,28 @@ export const useMutateRolUpdate = (setOpenActualizar: (open: boolean) => void) =
   });
 };
 
-export const useMutateAsignarPermisos = (setOpenAsignarRoles: (open: boolean) => void) => {};
+export const useMutateAsignarPermisos = (setOpenAsignarRoles: (open: boolean) => void) => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ id, data }: { id: number; data: { permisos: number[] } }) => asignarPermisos(data, id),
+    onMutate: async ({ id }) => {
+      await queryClient.cancelQueries({ queryKey: ["roles"] });
+      await queryClient.cancelQueries({ queryKey: ["permiso", id] });
+      const previousRoles = queryClient.getQueryData<ListarRolesType[]>(["roles"]);
+      return { previousRoles };
+    },
+    onError: (error, _variables, context) => {
+      if (context?.previousRoles) {
+        queryClient.setQueryData(["roles"], context.previousRoles);
+      }
+      toast.error(`Error al asignar permisos: ${error.message}`);
+    },
+    onSuccess: (_data, { id }) => {
+      toast.success("Permisos asignados correctamente");
+      queryClient.invalidateQueries({ queryKey: ["roles"] });
+      queryClient.invalidateQueries({ queryKey: ["permiso", id] });
+      setOpenAsignarRoles(false);
+    },
+  });
+};

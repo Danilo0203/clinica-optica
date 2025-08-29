@@ -1,10 +1,9 @@
 "use client";
 import { AlertModal } from "@/components/modal/alert-modal";
 import { Button } from "@/components/ui/button";
-// import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { useMutateRolDelete, useMutateRolUpdate, useMutateAsignarPermisos } from "@/modules/administracion/hooks/rol/useMutateRol";
 import { ListarRolesType } from "@/modules/administracion/interfaces/rol.interfaces";
-import { IconEdit, IconDotsVertical, IconTrash, IconUserPlus } from "@tabler/icons-react";
+import { IconEdit, IconTrash, IconUserPlus } from "@tabler/icons-react";
 import { useEffect, useState } from "react";
 import { FormRol } from "../modal/form-rol";
 import { useFormAsignarPermisosRol, useFormRol } from "@/modules/administracion/hooks/rol/useFormRol";
@@ -21,9 +20,10 @@ interface CellActionProps {
 export const CellAction: React.FC<CellActionProps> = ({ data }) => {
   const [open, setOpen] = useState(false);
   const [openActuaizar, setOpenActualizar] = useState(false);
-  const [openAsignarRoles, setOpenAsignarRoles] = useState(false);
+  const [openAsignarPermisos, setOpenAsignarPermisos] = useState(false);
   const { form, onSubmit } = useFormRol(setOpen);
-  const { form: formAsignarPermisos, onSubmit: onSubmitAsignarPermisos } = useFormAsignarPermisosRol(setOpenAsignarRoles);
+  // const [selectedPermisos, setSelectedPermisos] = useState<number[]>([]);
+  const { form: formAsignarPermisos, onSubmit: onSubmitAsignarPermisos } = useFormAsignarPermisosRol(setOpenAsignarPermisos);
 
   // eliminar rol
   const mutateDeleteRol = useMutateRolDelete(setOpen);
@@ -38,6 +38,12 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
   };
 
   // asignar roles
+  const mutateAsignarPermisos = useMutateAsignarPermisos(setOpenAsignarPermisos);
+  const onConfirmAsignar = () => {
+    formAsignarPermisos.handleSubmit(async (values) => {
+      await mutateAsignarPermisos.mutateAsync({ id: data.id, data: { permisos: values.permisos ?? [] } });
+    })();
+  };
 
   const {
     data: rol,
@@ -63,12 +69,20 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
     if (rol) form.reset(rol);
   }, [rol]);
 
+  // prellenar permisos al abrir modal de asignación
   useEffect(() => {
     if (openAsignarPermisos && rol?.permisos) {
       const ids = rol.permisos.map((p: any) => (typeof p === "number" ? p : p.id));
-      setSelectedPermisos(ids);
+      formAsignarPermisos.setValue("permisos", ids, { shouldValidate: true });
     }
-  }, [openAsignarPermisos, rol]);
+  }, [openAsignarPermisos, rol, formAsignarPermisos]);
+
+  // useEffect(() => {
+  //   if (openAsignarRoles && rol?.permisos) {
+  //     const ids = rol.permisos.map((p: any) => (typeof p === "number" ? p : p.id));
+  //     setSelectedPermisos(ids);
+  //   }
+  // }, [openAsignarRoles, rol]);
 
   return (
     <>
@@ -88,6 +102,7 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
           </p>
         </div>
       </AlertModal>
+
       {/* Actualizar Rol */}
       <AlertModal
         title="Actualizar Rol"
@@ -113,11 +128,12 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
       <AlertModal
         title="Asignar permisos"
         description={`Asignar permisos al rol ${data.nombre}.`}
-        isOpen={openAsignarRoles}
-        onClose={() => setOpenAsignarRoles(false)}
-        onConfirm={() => {}}
-        loading={false}
+        isOpen={openAsignarPermisos}
+        onClose={() => setOpenAsignarPermisos(false)}
+        onConfirm={onConfirmAsignar}
+        loading={mutateAsignarPermisos.isPending}
         icon="UserPlus"
+        className="max-w-4xl!"
       >
         <FormAsignarPermisosRol form={formAsignarPermisos} onSubmit={onSubmitAsignarPermisos} />
       </AlertModal>
@@ -151,7 +167,7 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
         </Tooltip>
         <Tooltip>
           <TooltipTrigger asChild>
-            <Button variant="ghost" className="h-8 w-8 p-0 cursor-pointer" onClick={() => setOpenAsignarRoles(true)}>
+            <Button variant="ghost" className="h-8 w-8 p-0 cursor-pointer" onClick={() => setOpenAsignarPermisos(true)}>
               <IconUserPlus className="size-4 text-blue-400" />
             </Button>
           </TooltipTrigger>

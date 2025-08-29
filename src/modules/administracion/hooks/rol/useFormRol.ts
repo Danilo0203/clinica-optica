@@ -32,9 +32,7 @@ export const useFormAsignarPermisosRol = (setOpen: (open: boolean) => void) => {
     resolver: zodResolver(asignarPermisosARolSchema),
     mode: "onChange",
   });
-  const onSubmit = (data: AsigarPermisosARol) => {
-    console.log(data);
-  };
+  const onSubmit = (_data: AsigarPermisosARol) => {};
   return {
     form,
     onSubmit,

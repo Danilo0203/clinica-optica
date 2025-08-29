@@ -11,7 +11,7 @@ export const rolSchema = z.object({
 export type Rol = z.infer<typeof rolSchema>;
 
 export const asignarPermisosARolSchema = z.object({
-  permisos: z.array(z.number()),
+  permisos: z.array(z.number()).min(1, { message: "Selecciona al menos un permiso" }),
 });
 
 export type AsigarPermisosARol = z.infer<typeof asignarPermisosARolSchema>;
