@@ -92,7 +92,7 @@ export const columns: ColumnDef<Usuario>[] = [
     // header: ({ column }: { column: Column<Product, unknown> }) => (
     //   <DataTableColumnHeader column={column} title="Category" />
     // ),
-    header: "Rol",
+    header: "Sucursal",
     cell: ({ row }) => {
       const data = row.original.sucursal_nombre;
 
@@ -112,10 +112,7 @@ export const columns: ColumnDef<Usuario>[] = [
       const data = row.original.is_active;
       const Icon = data ? CheckCircle2 : XCircle;
       return (
-        <Badge
-          variant="outline"
-          className={cn(data ? "text-green-600 bg-green-300/20!" : "text-destructive bg-destructive/20!")}
-        >
+        <Badge variant="outline" className={cn(data ? "text-green-600 bg-green-300/20!" : "text-destructive bg-destructive/20!")}>
           <Icon />
           {data ? "Activo" : "Inactivo"}
         </Badge>

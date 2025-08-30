@@ -1,15 +1,11 @@
 "use client";
 import { AlertModal } from "@/components/modal/alert-modal";
 import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { Tooltip, TooltipContent } from "@/components/ui/tooltip";
+import { TooltipTrigger } from "@/components/ui/tooltip";
 import { Usuario } from "@/modules/administracion/interfaces/usuario.interfaces";
-import { IconEdit, IconDotsVertical, IconTrash } from "@tabler/icons-react";
+import { IconEdit, IconDotsVertical, IconTrash, IconUserPlus } from "@tabler/icons-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
@@ -26,7 +22,7 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
 
   return (
     <>
-      <AlertModal isOpen={open} onClose={() => setOpen(false)} onConfirm={onConfirm} loading={loading} />
+      {/* <AlertModal isOpen={open} onClose={() => setOpen(false)} onConfirm={onConfirm} loading={loading} />
       <DropdownMenu modal={false}>
         <DropdownMenuTrigger asChild>
           <Button variant="ghost" className="h-8 w-8 p-0">
@@ -36,7 +32,6 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
           <DropdownMenuLabel>Acciones</DropdownMenuLabel>
-
           <DropdownMenuItem onClick={() => router.push(`/administracion/usuarios/${data.id}`)}>
             <IconEdit className="size-4" /> Actualizar
           </DropdownMenuItem>
@@ -44,7 +39,37 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
             <IconTrash className="size-4 text-red-400" /> Eliminar
           </DropdownMenuItem>
         </DropdownMenuContent>
-      </DropdownMenu>
+      </DropdownMenu> */}
+
+      <div className="flex items-center gap-2">
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Button variant="ghost" className="h-8 w-8 p-0 cursor-pointer" onClick={() => router.push(`/administracion/usuarios/${data.id}`)}>
+              <IconEdit className="size-4" />
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent>
+            <p>Actualizar</p>
+          </TooltipContent>
+        </Tooltip>
+        {/* <Tooltip>
+          <TooltipTrigger asChild>
+            <Button variant="ghost" className="h-8 w-8 p-0 cursor-pointer" onClick={() => setOpen(true)}>
+              <IconUserPlus className="size-4 text-blue-400" />
+            </Button>
+          </TooltipTrigger>
+        </Tooltip> */}
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Button variant="ghost" className="h-8 w-8 p-0 cursor-pointer" onClick={() => setOpen(true)}>
+              <IconTrash className="size-4 text-red-400" />
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent>
+            <p>Eliminar</p>
+          </TooltipContent>
+        </Tooltip>
+      </div>
     </>
   );
 };

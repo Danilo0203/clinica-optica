@@ -12,7 +12,7 @@ import { useQueryRol } from "@/modules/administracion/hooks/rol/useQueryRol";
 import { useQuerySucursal } from "@/modules/administracion/hooks/sucursal/useQuerySucursal";
 import { useQueryUsuarioId } from "@/modules/administracion/hooks/usuarios/useQueryUsuarios";
 import { UsuarioType } from "@/modules/administracion/interfaces/usuario.interfaces";
-import { Usuario, usuarioSchema } from "@/modules/administracion/schemas/usuario.schema";
+import { UsuarioCreate, UsuarioUpdate, usuarioCreateSchema, usuarioUpdateSchema } from "@/modules/administracion/schemas/usuario.schema";
 import { actualizarUsuario, crearUsuario } from "@/modules/administracion/services/usuario.services";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { AxiosError } from "axios";
@@ -23,11 +23,13 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
+type UsuarioFormValues = UsuarioCreate | UsuarioUpdate;
+
 export default function UsuariosForm({ initialData, pageTitle }: { initialData?: UsuarioType | null; pageTitle: string }) {
   console.log(initialData);
   const isEdit = Boolean(initialData);
-  const form = useForm<Usuario>({
-    resolver: zodResolver(usuarioSchema),
+  const form = useForm<UsuarioFormValues>({
+    resolver: zodResolver(isEdit ? usuarioUpdateSchema : usuarioCreateSchema),
     values: {
       username: initialData?.username || "",
       nombre_completo: initialData?.nombre_completo || "",
@@ -45,9 +47,7 @@ export default function UsuariosForm({ initialData, pageTitle }: { initialData?:
   const router = useRouter();
   const isSubmitting = form.formState.isSubmitting;
 
-  async function onSubmit(values: Usuario) {
-    const { dirtyFields } = form.formState;
-
+  async function onSubmit(values: UsuarioFormValues) {
     // Crear vs Editar estaba invertido. Si hay initialData => EDITAR, sino => CREAR
     if (!isEdit) {
       try {
@@ -55,16 +55,16 @@ export default function UsuariosForm({ initialData, pageTitle }: { initialData?:
           username: values.username,
           nombre_completo: values.nombre_completo,
           email: values.email,
-          fotografia: Array.isArray(values.fotografia) && values.fotografia.length > 0 ? values.fotografia[0] : undefined,
-          rol: values.rol ? Number(values.rol) : undefined,
-          sucursal: values.sucursal ? Number(values.sucursal) : undefined,
+          fotografia: Array.isArray(values.fotografia) && values.fotografia.length > 0 ? values.fotografia.slice(0, 1) : undefined,
+          rol: values.rol,
+          sucursal: values.sucursal,
           is_active: values.is_active,
           is_staff: values.is_staff,
-          password: values.password,
-          confirmar_password: values.confirmar_password,
-        } as const;
+          password: (values as UsuarioCreate).password,
+          confirmar_password: (values as UsuarioCreate).confirmar_password,
+        } as const satisfies UsuarioCreate;
 
-        const res = await crearUsuario(payload as unknown as Usuario);
+        const res = await crearUsuario(payload as unknown as UsuarioCreate);
         toast.success(`Usuario ${res.nombre_completo} creado exitosamente`);
         form.reset();
         router.push("/administracion/usuarios");
@@ -80,51 +80,26 @@ export default function UsuariosForm({ initialData, pageTitle }: { initialData?:
       return;
     }
 
-    // MODO EDICIÓN: enviar solo los campos modificados
-    const patch: Partial<Usuario> = {};
-
-    if (dirtyFields.username) patch.username = values.username;
-    if (dirtyFields.nombre_completo) patch.nombre_completo = values.nombre_completo;
-    if (dirtyFields.email) patch.email = values.email;
-    if (dirtyFields.fotografia) {
-      // si usas single file, tomar primer valor
-      const foto = Array.isArray(values.fotografia) ? values.fotografia[0] : values.fotografia;
-      if (foto) (patch as any).fotografia = foto;
-    }
-    if (dirtyFields.rol) patch.rol = values.rol ? values.rol : undefined;
-    if (dirtyFields.sucursal) patch.sucursal = values.sucursal ? values.sucursal : undefined;
-    if (dirtyFields.is_active) patch.is_active = values.is_active;
-    if (dirtyFields.is_staff) patch.is_staff = values.is_staff;
-
-    // Password solo si se cambió y coincide la confirmación
-    const changedPassword = dirtyFields.password || dirtyFields.confirmar_password;
-    if (changedPassword) {
-      if (values.password && values.confirmar_password && values.password === values.confirmar_password) {
-        patch.password = values.password;
-        (patch as any).confirmar_password = values.confirmar_password;
-      } else {
-        toast.error("Las contraseñas no coinciden o están incompletas.");
-        return;
-      }
-    }
-
-    // Si no hay nada que actualizar, notificar y salir
-    if (Object.keys(patch).length === 0) {
-      toast.message("No hay cambios para guardar.");
-      return;
-    }
-
     try {
-      const serverPatch: Partial<UsuarioType> = {
-        ...(patch.username !== undefined ? { username: patch.username } : {}),
-        ...(patch.nombre_completo !== undefined ? { nombre_completo: patch.nombre_completo } : {}),
-        ...(patch.email !== undefined ? { email: patch.email } : {}),
-        ...(patch.rol !== undefined ? { rol: Number(patch.rol) } : {}),
-        ...(patch.sucursal !== undefined ? { sucursal: Number(patch.sucursal) } : {}),
-        ...(patch.is_active !== undefined ? { is_active: patch.is_active } : {}),
-        ...(patch.is_staff !== undefined ? { is_staff: patch.is_staff } : {}),
+      const payload: Partial<UsuarioType> = {
+        username: values.username,
+        nombre_completo: values.nombre_completo,
+        email: values.email,
+        rol: values.rol ? Number(values.rol) : undefined,
+        sucursal: values.sucursal ? Number(values.sucursal) : undefined,
+        is_active: values.is_active,
+        is_staff: values.is_staff,
       };
-      const res = await actualizarUsuario(serverPatch, initialData?.id ?? 0);
+
+      // Incluir password solo si el usuario ingresó ambos campos en edición
+      const password = (values as UsuarioUpdate).password as string | undefined;
+      const confirmar = (values as UsuarioUpdate).confirmar_password as string | undefined;
+      if (password && password.length > 0 && confirmar && confirmar.length > 0) {
+        (payload as unknown as Record<string, unknown>).password = password;
+        (payload as unknown as Record<string, unknown>).confirmar_password = confirmar;
+      }
+
+      const res = await actualizarUsuario(payload, initialData?.id ?? 0);
       toast.success(`Usuario ${res?.nombre_completo ?? values.nombre_completo} actualizado correctamente`);
       router.push("/administracion/usuarios");
     } catch (error) {
