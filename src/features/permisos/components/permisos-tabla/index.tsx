@@ -10,15 +10,15 @@ interface PermisosTableParams<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
 }
 export function PermisosTable<TData, TValue>({ columns }: PermisosTableParams<ListarPermisosType, TValue>) {
-  const [pageSize] = useQueryState("perPage", parseAsInteger.withDefault(10));
+  // const [pageSize] = useQueryState("perPage", parseAsInteger.withDefault(10));
   const { permisoQuery } = useQueryPermiso();
   const data = permisoQuery.data || [];
-  const pageCount = Math.ceil(data.length / pageSize);
+  // const pageCount = Math.ceil(data.length / pageSize);
   const { table } = useDataTable({
     data, // product data
     columns, // product columns
-    pageCount: pageCount,
-    shallow: false, //Setting to false triggers a network request with the updated querystring.
+    pageCount: false, // o simplemente omitir esta prop
+    shallow: true,
     debounceMs: 500,
   });
 

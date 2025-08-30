@@ -12,15 +12,15 @@ interface RolesTableParams<TData, TValue> {
 export function RolesTable<TValue>({ columns }: RolesTableParams<ListarRolesType, TValue>) {
   const { rolQuery } = useQueryRol();
   const data = rolQuery.data || [];
-  const totalItems = rolQuery.data?.length || 0;
-  const [pageSize] = useQueryState("perPage", parseAsInteger.withDefault(10));
-  const pageCount = Math.ceil(totalItems / pageSize);
+  // const totalItems = rolQuery.data?.length || 0;
+  // const [pageSize] = useQueryState("perPage", parseAsInteger.withDefault(10));
+  // const pageCount = Math.ceil(totalItems / pageSize);
 
   const { table } = useDataTable({
     data,
     columns,
-    pageCount: pageCount,
-    shallow: false, //Setting to false triggers a network request with the updated querystring.
+    pageCount: false,
+    shallow: true, //Setting to false triggers a network request with the updated querystring.
     debounceMs: 500,
   });
 

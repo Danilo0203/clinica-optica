@@ -23,9 +23,7 @@ export const columns: ColumnDef<ListarRolesType>[] = [
   {
     id: "nombre",
     accessorKey: "nombre",
-    header: ({ column }: { column: Column<ListarRolesType, unknown> }) => (
-      <DataTableColumnHeader column={column} title="Nombre" />
-    ),
+    header: ({ column }: { column: Column<ListarRolesType, unknown> }) => <DataTableColumnHeader column={column} title="Nombre" />,
     cell: ({ row }) => {
       const nombre = row.original.nombre;
       return <div>{nombre}</div>;

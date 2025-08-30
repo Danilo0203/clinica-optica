@@ -30,7 +30,7 @@ export const columns: ColumnDef<Usuario>[] = [
   // },
   {
     id: "nombre",
-    accessorKey: "usuarios",
+    accessorKey: "nombre_completo",
     // header: ({ column }: { column: Column<ListUsuarioType, unknown> }) => (
     //   <DataTableColumnHeader column={column} title="Nombre" />
     // ),

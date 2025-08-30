@@ -42,15 +42,21 @@ const THROTTLE_MS = 50;
 
 interface UseDataTableProps<TData>
   extends Omit<
-      TableOptions<TData>,
-      | 'state'
-      | 'pageCount'
-      | 'getCoreRowModel'
-      | 'manualFiltering'
-      | 'manualPagination'
-      | 'manualSorting'
-    >,
-    Required<Pick<TableOptions<TData>, 'pageCount'>> {
+    TableOptions<TData>,
+    | 'state'
+    | 'pageCount'
+    | 'getCoreRowModel'
+    | 'manualFiltering'
+    | 'manualPagination'
+    | 'manualSorting'
+  > {
+  /** Si es número => modo servidor; si es false/undefined => modo cliente */
+  pageCount?: number | false;
+  /** Forzar modo servidor/cliente; si no se pasa, se infiere de pageCount */
+  serverSide?: boolean;
+  /** Solo aplica en modo servidor */
+  manualFiltering?: boolean;
+
   initialState?: Omit<Partial<TableState>, 'sorting'> & {
     sorting?: ExtendedColumnSort<TData>[];
   };
@@ -67,7 +73,9 @@ interface UseDataTableProps<TData>
 export function useDataTable<TData>(props: UseDataTableProps<TData>) {
   const {
     columns,
-    pageCount = -1,
+    pageCount,
+    serverSide,
+    manualFiltering = true, // solo se aplica si isServer === true
     initialState,
     history = 'replace',
     debounceMs = DEBOUNCE_MS,
@@ -79,6 +87,9 @@ export function useDataTable<TData>(props: UseDataTableProps<TData>) {
     startTransition,
     ...tableProps
   } = props;
+
+  // Decide modo: servidor si serverSide=true o si pageCount es número
+  const isServer = serverSide ?? (typeof pageCount === 'number');
 
   const queryStateOptions = React.useMemo<
     Omit<UseQueryStateOptions<string>, 'parse'>
@@ -168,13 +179,11 @@ export function useDataTable<TData>(props: UseDataTableProps<TData>) {
 
   const filterableColumns = React.useMemo(() => {
     if (enableAdvancedFilter) return [];
-
     return columns.filter((column) => column.enableColumnFilter);
   }, [columns, enableAdvancedFilter]);
 
   const filterParsers = React.useMemo(() => {
     if (enableAdvancedFilter) return {};
-
     return filterableColumns.reduce<
       Record<string, Parser<string> | Parser<string[]>>
     >((acc, column) => {
@@ -202,7 +211,6 @@ export function useDataTable<TData>(props: UseDataTableProps<TData>) {
 
   const initialColumnFilters: ColumnFiltersState = React.useMemo(() => {
     if (enableAdvancedFilter) return [];
-
     return Object.entries(filterValues).reduce<ColumnFiltersState>(
       (filters, [key, value]) => {
         if (value !== null) {
@@ -212,10 +220,7 @@ export function useDataTable<TData>(props: UseDataTableProps<TData>) {
               ? value.split(/[^a-zA-Z0-9]+/).filter(Boolean)
               : [value];
 
-          filters.push({
-            id: key,
-            value: processedValue
-          });
+          filters.push({ id: key, value: processedValue });
         }
         return filters;
       },
@@ -262,7 +267,8 @@ export function useDataTable<TData>(props: UseDataTableProps<TData>) {
     ...tableProps,
     columns,
     initialState,
-    pageCount,
+    // Solo pasa pageCount si estamos en modo servidor
+    ...(isServer && typeof pageCount === 'number' ? { pageCount } : {}),
     state: {
       pagination,
       sorting,
@@ -287,9 +293,14 @@ export function useDataTable<TData>(props: UseDataTableProps<TData>) {
     getFacetedRowModel: getFacetedRowModel(),
     getFacetedUniqueValues: getFacetedUniqueValues(),
     getFacetedMinMaxValues: getFacetedMinMaxValues(),
-    manualPagination: true,
-    manualSorting: true,
-    manualFiltering: true
+    // manual* solo en servidor
+    ...(isServer
+      ? {
+          manualPagination: true,
+          manualSorting: true,
+          manualFiltering: manualFiltering
+        }
+      : {})
   });
 
   return { table, shallow, debounceMs, throttleMs };

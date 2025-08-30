@@ -3,7 +3,7 @@ import { listRoles } from "@/modules/administracion/services/rol.services";
 import { useQuery } from "@tanstack/react-query";
 import { listUsuarios, obtenerUsuarioId } from "../../services/usuario.services";
 
-export const useQueryUusarios = () => {
+export const useQueryUsuarios = () => {
   const usuariosQuery = useQuery({
     queryKey: ["usuarios"],
     queryFn: listUsuarios,
