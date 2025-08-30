@@ -2,10 +2,7 @@ import { z } from "zod";
 
 export const usuarioSchema = z
   .object({
-    username: z
-      .string()
-      .min(3, { message: "Minimo 3 caracteres" })
-      .max(20, { message: "El nombre no puede exceder los 20 caracteres" }),
+    username: z.string().min(3, { message: "Minimo 3 caracteres" }).max(20, { message: "El nombre no puede exceder los 20 caracteres" }),
     nombre_completo: z.string().min(1, {
       message: "Debe ingresar un nombre completo",
     }),

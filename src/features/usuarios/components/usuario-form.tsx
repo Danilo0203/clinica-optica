@@ -23,13 +23,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
-export default function UsuariosForm({
-  initialData,
-  pageTitle,
-}: {
-  initialData?: UsuarioType | null;
-  pageTitle: string;
-}) {
+export default function UsuariosForm({ initialData, pageTitle }: { initialData?: UsuarioType | null; pageTitle: string }) {
   console.log(initialData);
   const isEdit = Boolean(initialData);
   const form = useForm<Usuario>({
@@ -61,8 +55,7 @@ export default function UsuariosForm({
           username: values.username,
           nombre_completo: values.nombre_completo,
           email: values.email,
-          fotografia:
-            Array.isArray(values.fotografia) && values.fotografia.length > 0 ? values.fotografia[0] : undefined,
+          fotografia: Array.isArray(values.fotografia) && values.fotografia.length > 0 ? values.fotografia[0] : undefined,
           rol: values.rol ? Number(values.rol) : undefined,
           sucursal: values.sucursal ? Number(values.sucursal) : undefined,
           is_active: values.is_active,
@@ -122,7 +115,16 @@ export default function UsuariosForm({
     }
 
     try {
-      const res = await actualizarUsuario({ id: initialData?.id ?? 0, values: patch });
+      const serverPatch: Partial<UsuarioType> = {
+        ...(patch.username !== undefined ? { username: patch.username } : {}),
+        ...(patch.nombre_completo !== undefined ? { nombre_completo: patch.nombre_completo } : {}),
+        ...(patch.email !== undefined ? { email: patch.email } : {}),
+        ...(patch.rol !== undefined ? { rol: Number(patch.rol) } : {}),
+        ...(patch.sucursal !== undefined ? { sucursal: Number(patch.sucursal) } : {}),
+        ...(patch.is_active !== undefined ? { is_active: patch.is_active } : {}),
+        ...(patch.is_staff !== undefined ? { is_staff: patch.is_staff } : {}),
+      };
+      const res = await actualizarUsuario(serverPatch, initialData?.id ?? 0);
       toast.success(`Usuario ${res?.nombre_completo ?? values.nombre_completo} actualizado correctamente`);
       router.push("/administracion/usuarios");
     } catch (error) {
@@ -147,9 +149,7 @@ export default function UsuariosForm({
     <Card className="mx-auto w-full">
       <CardHeader>
         <CardTitle className="text-left text-2xl font-bold">{pageTitle}</CardTitle>
-        <p className="text-sm text-muted-foreground">
-          Complete los datos del usuario. Los campos marcados con * son obligatorios.
-        </p>
+        <p className="text-sm text-muted-foreground">Complete los datos del usuario. Los campos marcados con * son obligatorios.</p>
       </CardHeader>
       <CardContent>
         <Form {...form}>
@@ -182,9 +182,7 @@ export default function UsuariosForm({
             <hr className="my-6" /> */}
 
             <h3 className="text-lg font-semibold mb-0">Datos básicos *</h3>
-            <p className="text-sm text-muted-foreground mb-4">
-              Nombre de usuario, nombre completo y correo electrónico.
-            </p>
+            <p className="text-sm text-muted-foreground mb-4">Nombre de usuario, nombre completo y correo electrónico.</p>
             <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
               <FormField
                 control={form.control}
@@ -239,14 +237,9 @@ export default function UsuariosForm({
                     <Popover open={openRol} onOpenChange={setOpenRol}>
                       <PopoverTrigger asChild>
                         <FormControl>
-                          <Button
-                            variant="outline"
-                            role="combobox"
-                            className={cn("w-full justify-between", !field.value && "text-muted-foreground")}
-                          >
+                          <Button variant="outline" role="combobox" className={cn("w-full justify-between", !field.value && "text-muted-foreground")}>
                             {field.value
-                              ? listRoles.find((rol) => rol.id.toString() === field.value)?.nombre ||
-                                "Seleccione un rol"
+                              ? listRoles.find((rol) => rol.id.toString() === field.value)?.nombre || "Seleccione un rol"
                               : "Seleccione un rol"}
                             <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                           </Button>
@@ -267,12 +260,7 @@ export default function UsuariosForm({
                                     setOpenRol(false);
                                   }}
                                 >
-                                  <Check
-                                    className={cn(
-                                      "mr-2 h-4 w-4",
-                                      rol.id.toString() === field.value ? "opacity-100" : "opacity-0"
-                                    )}
-                                  />
+                                  <Check className={cn("mr-2 h-4 w-4", rol.id.toString() === field.value ? "opacity-100" : "opacity-0")} />
                                   {rol.nombre}
                                 </CommandItem>
                               ))}
@@ -294,14 +282,9 @@ export default function UsuariosForm({
                     <Popover open={openSucursal} onOpenChange={setOpenSucursal}>
                       <PopoverTrigger asChild>
                         <FormControl>
-                          <Button
-                            variant="outline"
-                            role="combobox"
-                            className={cn("w-full justify-between", !field.value && "text-muted-foreground")}
-                          >
+                          <Button variant="outline" role="combobox" className={cn("w-full justify-between", !field.value && "text-muted-foreground")}>
                             {field.value
-                              ? listSucursales.find((sucursal) => sucursal.id.toString() === field.value)?.nombre ||
-                                "Seleccione una sucursal"
+                              ? listSucursales.find((sucursal) => sucursal.id.toString() === field.value)?.nombre || "Seleccione una sucursal"
                               : "Seleccione una sucursal"}
                             <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                           </Button>
@@ -325,10 +308,7 @@ export default function UsuariosForm({
                                 >
                                   <div className="flex items-center w-full">
                                     <Check
-                                      className={cn(
-                                        "mr-2 h-4 w-4 shrink-0",
-                                        sucursal.id.toString() === field.value ? "opacity-100" : "opacity-0"
-                                      )}
+                                      className={cn("mr-2 h-4 w-4 shrink-0", sucursal.id.toString() === field.value ? "opacity-100" : "opacity-0")}
                                     />
                                     <div className="flex-1">
                                       <div className="flex items-center gap-2">
@@ -343,7 +323,7 @@ export default function UsuariosForm({
                                         </span>
                                       </div>
                                       <div className="text-sm text-muted-foreground mt-1">
-                                        <div>Responsable: {sucursal.responsable}</div>
+                                        <div>Responsable: {sucursal.responsable_nombre}</div>
                                         <div>{sucursal.direccion}</div>
                                       </div>
                                     </div>

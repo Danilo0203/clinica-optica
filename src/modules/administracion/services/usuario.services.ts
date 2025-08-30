@@ -33,10 +33,8 @@ export const eliminarUsuario = async (id: number): Promise<void> => {
   return res.data;
 };
 
-export const actualizarUsuario = async (
-  data: Partial<UsuarioType> & { id: number }
-): Promise<ResponseUpdateUsuarioType> => {
-  const res = await apiConfig.put<ResponseUpdateUsuarioType>(`/api/users/usuarios/${data.id}/actualizar/`, data);
+export const actualizarUsuario = async (data: Partial<UsuarioType>, id: number): Promise<ResponseUpdateUsuarioType> => {
+  const res = await apiConfig.put<ResponseUpdateUsuarioType>(`/api/users/usuarios/${id}/actualizar/`, data);
   const usuario = res.data;
   // return localPermisoMapper(usuario);
   return usuario;
