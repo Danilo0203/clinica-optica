@@ -9,7 +9,6 @@ import { useFormSucursal } from "@/modules/administracion/hooks/sucursal/useForm
 export const ModalNuevoSucursal = () => {
   const [open, setOpen] = useState(false);
   const { form, onSubmit } = useFormSucursal(setOpen);
-
   return (
     <>
       <Button
@@ -25,7 +24,7 @@ export const ModalNuevoSucursal = () => {
         isOpen={open}
         onClose={() => setOpen(false)}
         onConfirm={form.handleSubmit(onSubmit)}
-        loading={false}
+        loading={form.formState.isSubmitting}
         icon="Building"
       >
         <FormSucursal form={form} onSubmit={onSubmit} />

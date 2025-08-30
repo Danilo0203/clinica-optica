@@ -23,8 +23,8 @@ export const useMutateSucursal = () => {
       queryClient.setQueryData(["sucursales"], context?.previousSucursales);
       toast.error(`Error al crear el sucursal: ${error.message}`);
     },
-    onSettled: (data) => {
-      toast.success(`Sucursal "${data?.nombre}" creado exitosamente.`);
+    onSuccess: (data) => {
+      toast.success(`Sucursal "${data.nombre}" creado exitosamente.`);
       queryClient.invalidateQueries({ queryKey: ["sucursales"] });
     },
   });
@@ -74,9 +74,7 @@ export const useMutateSucursalUpdate = (setOpenActualizar: (open: boolean) => vo
       await queryClient.cancelQueries({ queryKey: ["sucursales"] });
       const previousSucursales = queryClient.getQueryData<Sucursal[]>(["sucursales"]);
       queryClient.setQueryData<(Partial<Sucursal> & { id: number })[]>(["sucursales"], (old = []) =>
-        old.map((sucursal) =>
-          sucursal.id === sucursalActualizado.id ? { ...sucursal, ...sucursalActualizado } : sucursal
-        )
+        old.map((sucursal) => (sucursal.id === sucursalActualizado.id ? { ...sucursal, ...sucursalActualizado } : sucursal))
       );
       return { previousSucursales };
     },
@@ -88,9 +86,6 @@ export const useMutateSucursalUpdate = (setOpenActualizar: (open: boolean) => vo
       toast.success(`Sucursal "${data.nombre}" actualizado correctamente.`);
       setOpenActualizar(false);
       queryClient.invalidateQueries({ queryKey: ["sucursales"] });
-    },
-    onSettled: () => {
-      // queryClient.invalidateQueries({ queryKey: ["permisos"] });
     },
   });
 };

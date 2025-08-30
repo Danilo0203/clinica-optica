@@ -1,13 +1,7 @@
 "use client";
 import { AlertModal } from "@/components/modal/alert-modal";
 import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { IconEdit, IconDotsVertical, IconTrash } from "@tabler/icons-react";
 import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
@@ -16,10 +10,7 @@ import { Loader2 } from "lucide-react";
 import { FormSucursal } from "../form-sucursal";
 import { ListarSucursalesType } from "@/modules/administracion/interfaces/sucursales.interfaces";
 import { useFormSucursal } from "@/modules/administracion/hooks/sucursal/useFormSucursal";
-import {
-  useMutateSucursalDelete,
-  useMutateSucursalUpdate,
-} from "@/modules/administracion/hooks/sucursal/useMutateSucursal";
+import { useMutateSucursalDelete, useMutateSucursalUpdate } from "@/modules/administracion/hooks/sucursal/useMutateSucursal";
 import { obtenerSucursalId } from "@/modules/administracion/services/sucursal.services";
 
 interface CellActionProps {
@@ -61,7 +52,14 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
 
   // cuando el query tenga datos, setear en el form
   useEffect(() => {
-    if (sucursal) form.reset(sucursal);
+    if (sucursal) form.reset({
+      nombre: sucursal.nombre,
+      direccion: sucursal.direccion,
+      telefono: sucursal.telefono,
+      activo: sucursal.activo,
+      responsable: sucursal.responsable.toString(),
+      responsable_nombre: sucursal.responsable_nombre,
+    });
   }, [sucursal]);
 
   return (

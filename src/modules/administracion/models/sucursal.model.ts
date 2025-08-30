@@ -6,7 +6,8 @@ export class Sucursal {
   nombre: string;
   direccion: string;
   telefono: string;
-  responsable: string;
+  responsable: number;
+  responsable_nombre: string;
   activo: boolean;
   creado_en: Date;
   actualizado_en: Date;
@@ -18,6 +19,7 @@ export class Sucursal {
     actualizado_en,
     telefono,
     responsable,
+    responsable_nombre,
     creado_en,
   }: ListarSucursalesType) {
     this.id = id;
@@ -28,5 +30,6 @@ export class Sucursal {
     this.actualizado_en = actualizado_en;
     this.responsable = responsable;
     this.creado_en = creado_en;
+    this.responsable_nombre = responsable_nombre;
   }
 }

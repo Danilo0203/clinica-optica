@@ -20,6 +20,15 @@ export const columns: ColumnDef<ListarSucursalesType>[] = [
     },
   },
   {
+    id: "responsable",
+    accessorKey: "responsable",
+    header: "Responsable",
+    cell: ({ row }) => {
+      const data = row.original.responsable_nombre;
+      return data;
+    },
+  },
+  {
     id: "nombre",
     accessorKey: "nombre",
     header: "Nombre",
@@ -68,10 +77,7 @@ export const columns: ColumnDef<ListarSucursalesType>[] = [
       const data = row.original.activo;
       const Icon = data ? CheckCircle2 : XCircle;
       return (
-        <Badge
-          variant="outline"
-          className={cn(data ? "text-green-600 bg-green-300/20!" : "text-destructive bg-destructive/20!")}
-        >
+        <Badge variant="outline" className={cn(data ? "text-green-600 bg-green-300/20!" : "text-destructive bg-destructive/20!")}>
           <Icon />
           {data ? "Activo" : "Inactivo"}
         </Badge>

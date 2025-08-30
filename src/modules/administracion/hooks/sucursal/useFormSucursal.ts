@@ -9,8 +9,9 @@ export const useFormSucursal = (setOpen: (open: boolean) => void) => {
       nombre: "",
       direccion: "",
       telefono: "",
-      email: "",
+      // email: "",
       responsable: "",
+      responsable_nombre: "",
       activo: true,
     },
     resolver: zodResolver(sucursalSchema),
@@ -19,7 +20,14 @@ export const useFormSucursal = (setOpen: (open: boolean) => void) => {
   const crearSucursal = useMutateSucursal();
 
   const onSubmit = (data: Sucursal) => {
-    crearSucursal.mutate(data);
+    const formData = {
+      nombre: data.nombre,
+      direccion: data.direccion,
+      telefono: data.telefono,
+      activo: data.activo,
+      responsable: data.responsable,
+    };
+    crearSucursal.mutate(formData);
     form.reset();
     setOpen(false);
   };

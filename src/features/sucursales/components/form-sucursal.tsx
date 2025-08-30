@@ -8,59 +8,26 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Switch } from "@/components/ui/switch";
 import { cn } from "@/lib/utils";
 import { Sucursal } from "@/modules/administracion/schemas/sucursal.schema";
-import { Check, ChevronsUpDown, Search } from "lucide-react";
-import { useState } from "react";
+import { Check, ChevronsUpDown } from "lucide-react";
+import { useMemo, useState } from "react";
 import { SubmitHandler, UseFormReturn } from "react-hook-form";
+import { useQueryUusarios } from "@/modules/administracion/hooks/usuarios/useQueryUsuarios";
 
 interface FormValues {
   form: UseFormReturn<Sucursal>;
   onSubmit: SubmitHandler<Sucursal>;
 }
-const frameworks = [
-  {
-    value: "next.js",
-    label: "Next.js",
-  },
-  {
-    value: "sveltekit",
-    label: "SvelteKit",
-  },
-  {
-    value: "nuxt.js",
-    label: "Nuxt.js",
-  },
-  {
-    value: "remix",
-    label: "Remix",
-  },
-  {
-    value: "astro",
-    label: "Astro",
-  },
-  {
-    value: "react",
-    label: "React",
-  },
-  {
-    value: "vue",
-    label: "Vue.js",
-  },
-  {
-    value: "angular",
-    label: "Angular",
-  },
-  {
-    value: "svelte",
-    label: "Svelte",
-  },
-  {
-    value: "gatsby",
-    label: "Gatsby",
-  },
-];
 export const FormSucursal = ({ form, onSubmit }: FormValues) => {
   const [open, setOpen] = useState(false);
-  const [value, setValue] = useState("");
+  const { usuariosQuery } = useQueryUusarios();
+  const usuariosOptions = useMemo(() => {
+    const usuarios = usuariosQuery.data?.usuarios ?? [];
+    return usuarios.map((usuario) => ({
+      value: usuario.id.toString(),
+      label: usuario.nombre_completo,
+    }));
+  }, [usuariosQuery.data?.usuarios]);
+
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
@@ -98,13 +65,7 @@ export const FormSucursal = ({ form, onSubmit }: FormValues) => {
               <FormItem>
                 <FormLabel>Telefono</FormLabel>
                 <FormControl>
-                  <Input
-                    {...field}
-                    type="tel"
-                    placeholder="Ej: 12345678"
-                    pattern="[0-9]{9}"
-                    title="Debe ser un número de 8 dígitos"
-                  />
+                  <Input {...field} type="tel" placeholder="Ej: 12345678" pattern="[0-9]{9}" title="Debe ser un número de 8 dígitos" />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -120,9 +81,7 @@ export const FormSucursal = ({ form, onSubmit }: FormValues) => {
                   <Popover open={open} onOpenChange={setOpen}>
                     <PopoverTrigger asChild>
                       <Button variant="outline" role="combobox" aria-expanded={open} className="w-full justify-between">
-                        {value
-                          ? frameworks.find((framework) => framework.value === value)?.label
-                          : "Selecciona un framework..."}
+                        {field.value ? usuariosOptions.find((usuario) => usuario.value === field.value.toString())?.label : "Responsable..."}
                         <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                       </Button>
                     </PopoverTrigger>
@@ -130,29 +89,25 @@ export const FormSucursal = ({ form, onSubmit }: FormValues) => {
                       <Command>
                         <div className="flex items-center border-b">
                           <CommandInput
-                            placeholder="Buscar framework..."
+                            placeholder="Buscar usuario..."
                             className="flex h-10 w-full rounded-md bg-transparent py-3 text-sm outline-none placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50"
                           />
                         </div>
                         <CommandList>
                           <CommandEmpty>No se encontraron resultados.</CommandEmpty>
                           <CommandGroup>
-                            {frameworks.map((framework) => (
+                            {usuariosOptions.map((usuario) => (
                               <CommandItem
-                                key={framework.value}
-                                value={framework.value}
+                                key={usuario.value}
+                                value={usuario.value}
                                 onSelect={(currentValue) => {
-                                  setValue(currentValue === value ? "" : currentValue);
+                                  const nextValue = currentValue === field.value ? "" : currentValue;
+                                  field.onChange(nextValue);
                                   setOpen(false);
                                 }}
                               >
-                                <Check
-                                  className={cn(
-                                    "mr-2 h-4 w-4",
-                                    value === framework.value ? "opacity-100" : "opacity-0"
-                                  )}
-                                />
-                                {framework.label}
+                                <Check className={cn("mr-2 h-4 w-4", field.value === usuario.value ? "opacity-100" : "opacity-0")} />
+                                {usuario.label}
                               </CommandItem>
                             ))}
                           </CommandGroup>
