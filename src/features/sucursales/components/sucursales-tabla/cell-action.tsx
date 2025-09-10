@@ -1,13 +1,7 @@
 "use client";
 import { AlertModal } from "@/components/modal/alert-modal";
 import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { IconEdit, IconDotsVertical, IconTrash } from "@tabler/icons-react";
 import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
@@ -16,11 +10,9 @@ import { Loader2 } from "lucide-react";
 import { FormSucursal } from "../form-sucursal";
 import { ListarSucursalesType } from "@/modules/administracion/interfaces/sucursales.interfaces";
 import { useFormSucursal } from "@/modules/administracion/hooks/sucursal/useFormSucursal";
-import {
-  useMutateSucursalDelete,
-  useMutateSucursalUpdate,
-} from "@/modules/administracion/hooks/sucursal/useMutateSucursal";
+import { useMutateSucursalDelete, useMutateSucursalUpdate } from "@/modules/administracion/hooks/sucursal/useMutateSucursal";
 import { obtenerSucursalId } from "@/modules/administracion/services/sucursal.services";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 
 interface CellActionProps {
   data: ListarSucursalesType;
@@ -31,6 +23,7 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
   const [openActuaizar, setOpenActualizar] = useState(false);
   const { form, onSubmit } = useFormSucursal(setOpen);
   const mutateDeletePermiso = useMutateSucursalDelete(setOpen);
+
   const onConfirmDelete = async () => {
     await mutateDeletePermiso.mutateAsync(data.id);
   };
@@ -99,6 +92,7 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
         onConfirm={onConfirmUpdate}
         loading={mutateUpadatePermiso.isPending}
         icon="SquarePen"
+        className="max-w-2xl!"
       >
         {isLoading ? (
           <div className="flex items-center justify-center">
@@ -110,7 +104,7 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
           <FormSucursal form={form} onSubmit={onSubmit} />
         )}
       </AlertModal>
-      <DropdownMenu modal={false}>
+      {/* <DropdownMenu modal={false}>
         <DropdownMenuTrigger asChild>
           <Button variant="ghost" className="h-8 w-8 p-0">
             <span className="sr-only">Open menu</span>
@@ -126,7 +120,30 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
             <IconTrash className="size-4 text-red-400" /> Desactivar
           </DropdownMenuItem>
         </DropdownMenuContent>
-      </DropdownMenu>
+      </DropdownMenu> */}
+
+      <div className="flex items-center gap-2">
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Button variant="ghost" className="h-8 w-8 p-0 cursor-pointer" onClick={openUpdateModal}>
+              <IconEdit className="size-4" />
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent>
+            <p>Actualizar</p>
+          </TooltipContent>
+        </Tooltip>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Button variant="ghost" className="h-8 w-8 p-0 cursor-pointer" onClick={() => setOpen(true)}>
+              <IconTrash className="size-4 text-red-400" />
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent>
+            <p>Desactivar</p>
+          </TooltipContent>
+        </Tooltip>
+      </div>
     </>
   );
 };

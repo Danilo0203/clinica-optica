@@ -26,6 +26,7 @@ export const ModalNuevoSucursal = () => {
         onConfirm={form.handleSubmit(onSubmit)}
         loading={form.formState.isSubmitting}
         icon="Building"
+        className="max-w-2xl!"
       >
         <FormSucursal form={form} onSubmit={onSubmit} />
       </AlertModal>

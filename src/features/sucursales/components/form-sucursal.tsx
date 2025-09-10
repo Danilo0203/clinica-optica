@@ -11,7 +11,7 @@ import { Sucursal } from "@/modules/administracion/schemas/sucursal.schema";
 import { Check, ChevronsUpDown } from "lucide-react";
 import { useMemo, useState } from "react";
 import { SubmitHandler, UseFormReturn } from "react-hook-form";
-import { useQueryUusarios } from "@/modules/administracion/hooks/usuarios/useQueryUsuarios";
+import { useQueryUsuarios } from "@/modules/administracion/hooks/usuarios/useQueryUsuarios";
 
 interface FormValues {
   form: UseFormReturn<Sucursal>;
@@ -19,7 +19,7 @@ interface FormValues {
 }
 export const FormSucursal = ({ form, onSubmit }: FormValues) => {
   const [open, setOpen] = useState(false);
-  const { usuariosQuery } = useQueryUusarios();
+  const { usuariosQuery } = useQueryUsuarios();
   const usuariosOptions = useMemo(() => {
     const usuarios = usuariosQuery.data?.usuarios ?? [];
     return usuarios.map((usuario) => ({
@@ -120,24 +120,24 @@ export const FormSucursal = ({ form, onSubmit }: FormValues) => {
               </FormItem>
             )}
           />
+          <FormField
+            control={form.control}
+            name="activo"
+            render={({ field }) => (
+              <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm">
+                <div className="space-y-0.5">
+                  <FormLabel className="mb-2">Estado del Sucursal</FormLabel>
+                  <FormDescription>
+                    <Badge variant={field.value ? "default" : "destructive"}>{field.value ? "Activo" : "Inactivo"}</Badge>
+                  </FormDescription>
+                </div>
+                <FormControl>
+                  <Switch checked={field.value} onCheckedChange={field.onChange} />
+                </FormControl>
+              </FormItem>
+            )}
+          />
         </div>
-        <FormField
-          control={form.control}
-          name="activo"
-          render={({ field }) => (
-            <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm">
-              <div className="space-y-0.5">
-                <FormLabel className="mb-2">Estado del Sucursal</FormLabel>
-                <FormDescription>
-                  <Badge variant={field.value ? "default" : "destructive"}>{field.value ? "Activo" : "Inactivo"}</Badge>
-                </FormDescription>
-              </div>
-              <FormControl>
-                <Switch checked={field.value} onCheckedChange={field.onChange} />
-              </FormControl>
-            </FormItem>
-          )}
-        />
       </form>
     </Form>
   );

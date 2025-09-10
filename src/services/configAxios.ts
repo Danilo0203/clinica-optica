@@ -21,9 +21,15 @@ apiConfig.interceptors.request.use((config) => {
 apiConfig.interceptors.response.use(
   (res) => res,
   (error) => {
-    if (error.response?.status === 401) {
+    const status = error?.response?.status;
+    const requestUrl = error?.config?.url as string | undefined;
+    const isLoginRequest = requestUrl?.includes("/api/users/token/");
+
+    if (status === 401 && !isLoginRequest) {
       Cookies.remove("access_token");
-      window.location.href = "/auth/sign-in";
+      if (typeof window !== "undefined" && window.location.pathname !== "/auth/sign-in") {
+        window.location.href = "/auth/sign-in";
+      }
     }
     return Promise.reject(error);
   }

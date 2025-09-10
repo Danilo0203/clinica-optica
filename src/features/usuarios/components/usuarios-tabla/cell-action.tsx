@@ -8,14 +8,9 @@ import { Usuario } from "@/modules/administracion/interfaces/usuario.interfaces"
 import { IconEdit, IconTrash, IconKey } from "@tabler/icons-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { toast } from "sonner";
-import { actualizarContraseñaUsuario } from "@/modules/administracion/services/usuario.services";
 import { Form, FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
 import { EyeIcon, EyeOffIcon } from "lucide-react";
-import { AxiosError } from "axios";
+import { useFormUpadatePassword } from "@/modules/administracion/hooks/usuarios/useFormUpadatePassword";
 
 interface CellActionProps {
   data: Usuario;
@@ -26,39 +21,7 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
   const [passwordType, setPasswordType] = useState("password");
   const [confirmarPasswordType, setConfirmarPasswordType] = useState("password");
   const router = useRouter();
-
-  const passwordUpdateSchema = z.object({
-    password_actual: z.string().min(8, { message: "minimo 8 caracteres" }),
-    password_nuevo: z.string().min(8, { message: "minimo 8 caracteres" }),
-    confirmar_password: z.string().min(8, { message: "minimo 8 caracteres" }),
-  });
-
-  const form = useForm<z.infer<typeof passwordUpdateSchema>>({
-    resolver: zodResolver(passwordUpdateSchema),
-    defaultValues: {
-      password_actual: "",
-      password_nuevo: "",
-      confirmar_password: "",
-    },
-    mode: "onChange",
-  });
-
-  const onSubmit = async (data: z.infer<typeof passwordUpdateSchema>) => {
-    try {
-      const res = await actualizarContraseñaUsuario(data);
-      if ("message" in res) {
-        toast.success(res.message);
-        setOpen(false);
-        form.reset();
-      }
-    } catch (error) {
-      if (error instanceof AxiosError) {
-        toast.error(error.response?.data?.error || "Error al actualizar la contraseña. Por favor, inténtelo de nuevo.");
-      } else {
-        toast.error("Error inesperado al actualizar la contraseña.");
-      }
-    }
-  };
+  const { form, onSubmit } = useFormUpadatePassword(setOpen);
 
   return (
     <>
