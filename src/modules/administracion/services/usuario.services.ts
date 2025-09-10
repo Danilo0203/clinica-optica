@@ -1,6 +1,6 @@
 import { apiConfig } from "@/services/configAxios";
 import {
-  ListUsuarioType,
+  toListUsuarioType,
   ResponseCrearUsuarioType,
   ResponseObtenerUsuarioID,
   ResponseUpdateUsuarioType,
@@ -21,8 +21,8 @@ export const obtenerUsuarioId = async (id: number): Promise<ResponseObtenerUsuar
   return usuario;
 };
 
-export const listUsuarios = async (): Promise<ListUsuarioType> => {
-  const res = await apiConfig.get<ListUsuarioType>("/api/users/usuarios/");
+export const listUsuarios = async (): Promise<toListUsuarioType> => {
+  const res = await apiConfig.get<toListUsuarioType>("/api/users/usuarios/");
   const data = res.data;
   // const roles = data.map(localPermisoMapper);
   return data;
@@ -38,4 +38,14 @@ export const actualizarUsuario = async (data: Partial<UsuarioType>, id: number):
   const usuario = res.data;
   // return localPermisoMapper(usuario);
   return usuario;
+};
+
+export const actualizarContraseñaUsuario = async (data: {
+  password_actual: string;
+  password_nuevo: string;
+  confirmar_password: string;
+}): Promise<{ message: string } | { error: string }> => {
+  const res = await apiConfig.post<{ message: string } | { error: string }>(`/api/users/usuarios/cambiar-password/`, data);
+  const passwordActualizado = res.data;
+  return passwordActualizado;
 };

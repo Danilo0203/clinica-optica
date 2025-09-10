@@ -26,7 +26,6 @@ import { toast } from "sonner";
 type UsuarioFormValues = UsuarioCreate | UsuarioUpdate;
 
 export default function UsuariosForm({ initialData, pageTitle }: { initialData?: UsuarioType | null; pageTitle: string }) {
-  console.log(initialData);
   const isEdit = Boolean(initialData);
   const form = useForm<UsuarioFormValues>({
     resolver: zodResolver(isEdit ? usuarioUpdateSchema : usuarioCreateSchema),
@@ -347,40 +346,45 @@ export default function UsuariosForm({ initialData, pageTitle }: { initialData?:
                 )}
               /> */}
             </div>
-            <hr className="my-6" />
 
-            <h3 className="text-lg font-semibold mb-0">Credenciales *</h3>
-            <p className="text-sm text-muted-foreground mb-4">Cree una contraseña segura para el usuario.</p>
-            <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-              <FormField
-                control={form.control}
-                name="password"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Contraseña</FormLabel>
-                    <FormControl>
-                      <Input type="password" placeholder="Ingrese la contraseña" {...field} />
-                    </FormControl>
-                    <FormDescription>Mínimo 8 caracteres. Use mayúsculas, minúsculas y números.</FormDescription>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="confirmar_password"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Confirmar contraseña</FormLabel>
-                    <FormControl>
-                      <Input type="password" placeholder="Confirme la contraseña" {...field} />
-                    </FormControl>
-                    <FormDescription>Debe coincidir con la contraseña.</FormDescription>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
+            {!isEdit && (
+              <>
+                <hr className="my-6" />
+
+                <h3 className="text-lg font-semibold mb-0">Credenciales *</h3>
+                <p className="text-sm text-muted-foreground mb-4">Cree una contraseña segura para el usuario.</p>
+                <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+                  <FormField
+                    control={form.control}
+                    name="password"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Contraseña</FormLabel>
+                        <FormControl>
+                          <Input type="password" placeholder="Ingrese la contraseña" {...field} />
+                        </FormControl>
+                        <FormDescription>Mínimo 8 caracteres. Use mayúsculas, minúsculas y números.</FormDescription>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="confirmar_password"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Confirmar contraseña</FormLabel>
+                        <FormControl>
+                          <Input type="password" placeholder="Confirme la contraseña" {...field} />
+                        </FormControl>
+                        <FormDescription>Debe coincidir con la contraseña.</FormDescription>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+              </>
+            )}
 
             <div className="flex items-center gap-3 pt-2">
               <Button type="submit" disabled={isSubmitting}>
