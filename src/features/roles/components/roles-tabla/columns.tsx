@@ -8,18 +8,18 @@ import { CellAction } from "./cell-action";
 import { ListarRolesType } from "@/modules/administracion/interfaces/rol.interfaces";
 
 export const columns: ColumnDef<ListarRolesType>[] = [
-  {
-    accessorKey: "id",
-    header: "No.",
-    cell: ({ row }) => {
-      const id = row.original.id;
-      return <div>{id}</div>;
-    },
-    meta: {
-      label: "No",
-    },
-    maxSize: 1,
-  },
+  // {
+  //   accessorKey: "id",
+  //   header: "No.",
+  //   cell: ({ row }) => {
+  //     const id = row.original.id;
+  //     return <div>{id}</div>;
+  //   },
+  //   meta: {
+  //     label: "No",
+  //   },
+  //   maxSize: 1,
+  // },
   {
     id: "nombre",
     accessorKey: "nombre",

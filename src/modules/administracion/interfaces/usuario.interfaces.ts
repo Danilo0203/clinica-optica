@@ -53,7 +53,7 @@ export interface ResponseCrearUsuarioType {
   sucursal: number;
 }
 
-export interface ListUsuarioType {
+export interface toListUsuarioType {
   usuarios: Usuario[];
   roles: Role[];
   sucursales: Sucursale[];

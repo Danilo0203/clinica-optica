@@ -116,12 +116,33 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
         </DropdownMenuContent>
       </DropdownMenu> */}
       <div className="flex items-center gap-2">
-        <Button variant="ghost" className="h-8 w-8 p-0 cursor-pointer" onClick={openUpdateModal}>
-          <IconEdit className="size-4" />
-        </Button>
-        <Button variant="ghost" className="h-8 w-8 p-0 cursor-pointer" onClick={() => setOpen(true)}>
-          <IconTrash className="size-4 text-red-400" />
-        </Button>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Button variant="ghost" className="h-8 w-8 p-0 cursor-pointer" onClick={openUpdateModal}>
+              <IconEdit className="size-4" />
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent>
+            <p>Actualizar</p>
+          </TooltipContent>
+        </Tooltip>
+        {/* <Tooltip>
+          <TooltipTrigger asChild>
+            <Button variant="ghost" className="h-8 w-8 p-0 cursor-pointer" onClick={() => setOpen(true)}>
+              <IconUserPlus className="size-4 text-blue-400" />
+            </Button>
+          </TooltipTrigger>
+        </Tooltip> */}
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Button variant="ghost" className="h-8 w-8 p-0 cursor-pointer" onClick={() => setOpen(true)}>
+              <IconTrash className="size-4 text-red-400" />
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent>
+            <p>Desactivar</p>
+          </TooltipContent>
+        </Tooltip>
       </div>
     </>
   );

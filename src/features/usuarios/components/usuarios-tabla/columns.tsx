@@ -5,8 +5,8 @@ import { Column, ColumnDef } from "@tanstack/react-table";
 import { CheckCircle2, Text, XCircle } from "lucide-react";
 import Image from "next/image";
 import { CellAction } from "./cell-action";
-import { CATEGORY_OPTIONS } from "./options";
-import { ListUsuarioType, Usuario } from "@/modules/administracion/interfaces/usuario.interfaces";
+// import { CATEGORY_OPTIONS } from "./options";
+import { Usuario } from "@/modules/administracion/interfaces/usuario.interfaces";
 import { cn } from "@/lib/utils";
 
 export const columns: ColumnDef<Usuario>[] = [
@@ -112,7 +112,7 @@ export const columns: ColumnDef<Usuario>[] = [
       const data = row.original.is_active;
       const Icon = data ? CheckCircle2 : XCircle;
       return (
-        <Badge variant="outline" className={cn(data ? "text-green-600 bg-green-300/20!" : "text-destructive bg-destructive/20!")}>
+        <Badge variant="outline" className={cn(data ? "text-primary bg-primary/20!" : "text-blue-600 bg-blue-300/20!")}>
           <Icon />
           {data ? "Activo" : "Inactivo"}
         </Badge>

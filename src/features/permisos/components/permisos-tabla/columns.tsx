@@ -8,17 +8,17 @@ import { ListarPermisosType } from "@/modules/administracion/interfaces/permisos
 import { cn } from "@/lib/utils";
 
 export const columns: ColumnDef<ListarPermisosType>[] = [
-  {
-    accessorKey: "id",
-    header: "No.",
-    cell: ({ row }) => {
-      const data = row.original.id;
-      return data;
-    },
-    meta: {
-      label: "No.",
-    },
-  },
+  // {
+  //   accessorKey: "id",
+  //   header: "No.",
+  //   cell: ({ row }) => {
+  //     const data = row.original.id;
+  //     return data;
+  //   },
+  //   meta: {
+  //     label: "No.",
+  //   },
+  // },
   {
     id: "nombre",
     accessorKey: "nombre",
@@ -57,7 +57,7 @@ export const columns: ColumnDef<ListarPermisosType>[] = [
       const data = row.original.activo;
       const Icon = data ? CheckCircle2 : XCircle;
       return (
-        <Badge variant="outline" className={cn(data ? "text-green-600 bg-green-300/20!" : "text-destructive bg-destructive/20!")}>
+        <Badge variant="outline" className={cn(data ? "text-primary bg-primary/20!" : "text-blue-600 bg-blue-300/20!")}>
           <Icon />
           {data ? "Activo" : "Inactivo"}
         </Badge>
